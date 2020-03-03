@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class SocketClient : MonoBehaviour
 {
-	public static SocketClient ActiveSocket { get; private set; }
+	public static SocketClient ActiveSocket { get; private set; }   // Do we really need this
 
 	private ASCIIEncoding encoder = new ASCIIEncoding();
 
@@ -20,6 +20,9 @@ public class SocketClient : MonoBehaviour
     private bool connecting = false;
     private bool connected = false;
 
+    /// <summary>
+    /// Thread safe method to see if we are attempting to connect
+    /// </summary>
     private bool Connecting {
         get {
             lock ( this )
@@ -36,6 +39,9 @@ public class SocketClient : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Thread safe method to check if we are connected
+    /// </summary>
     private bool Connected {
         get {
             lock ( this )
@@ -52,6 +58,7 @@ public class SocketClient : MonoBehaviour
         }
     }
 
+
     private Thread connectThread;
     private Thread receiveThread;
     private Thread sendThread;
@@ -61,6 +68,16 @@ public class SocketClient : MonoBehaviour
 
     Queue inboundQueue;
     Queue outboundQueue;
+
+    /// <summary>
+    /// Do we have any inbound messages waiting to be processed
+    /// </summary>
+    public bool HasMessages => inboundQueue.Count > 0;
+
+    /// <summary>
+    /// Do we have any outbound messages pendding to be sent
+    /// </summary>
+    public bool HasPenndingMessage => outboundQueue.Count > 0;
 
     /// <summary>
     /// Thread safe version of _reciveThread_isRunnging :)
@@ -110,8 +127,7 @@ public class SocketClient : MonoBehaviour
     void Start()
     {
 
-        //socket.Connect( new IPEndPoint( IPAddress.Parse(hostIp), port ) );
-
+        // start the synchronized queues
         inboundQueue = Queue.Synchronized( new Queue() );
         outboundQueue = Queue.Synchronized( new Queue() );
 
@@ -121,6 +137,7 @@ public class SocketClient : MonoBehaviour
     void Update()
     {
 
+        // TODO: Review...
         if (!Connecting && !Connected)  // connect
         {
             Connecting = true;
@@ -142,11 +159,8 @@ public class SocketClient : MonoBehaviour
             sendThread.Start();
         }
 
-        //GetMessages();
         
     }
-
-    public bool HasMessages => inboundQueue.Count > 0;
 
     public string[] GetMessages ()
     {
@@ -191,20 +205,6 @@ public class SocketClient : MonoBehaviour
             {
                 Debug.LogError( e );
             }
-        }
-
-    }
-
-    private void Disconnect ()
-    {
-
-        //socket.Disconnect(false);
-
-        try { 
-            socket.Shutdown(SocketShutdown.Both);
-        }
-        finally{
-            socket.Close();
         }
 
     }
@@ -274,6 +274,22 @@ public class SocketClient : MonoBehaviour
         }
 
         SendThread_isRunning = false;
+
+    }
+
+    private void Disconnect ()
+    {
+
+        //socket.Disconnect(false);
+
+        try
+        {
+            socket.Shutdown( SocketShutdown.Both );
+        }
+        finally
+        {
+            socket.Close();
+        }
 
     }
 
