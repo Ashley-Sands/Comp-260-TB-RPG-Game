@@ -5,10 +5,17 @@ using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Protocol;
 
 public class SocketClient : MonoBehaviour
 {
-	public static SocketClient ActiveSocket { get; private set; }   // Do we really need this
+
+    private const int   MESSAGE_LEN_PACKAGE_SIZE    = 2;
+    private const int   MESSAGE_TYPE_PACKAGE_SIZE   = 1;
+    private const int   MESSAGE_MAX_LENGTH          = 1024;
+    private const bool  LITTLE_BYTE_ORDER           = false;
+
+    //public static SocketClient ActiveSocket { get; private set; }   // Do we really need this
 
 	private ASCIIEncoding encoder = new ASCIIEncoding();
 
@@ -212,32 +219,44 @@ public class SocketClient : MonoBehaviour
     private void ReciveMessage()
     {
 
-        byte[] mesLenBuffer = new byte[ 2 ];
-        byte[] buffer = new byte[ 1024 ];
+        byte[] mesLenBuffer = new byte[ MESSAGE_LEN_PACKAGE_SIZE ];
+        byte[] mesTypeBuffer = new byte[ MESSAGE_TYPE_PACKAGE_SIZE ];
+        byte[] mesBuffer = new byte[ MESSAGE_MAX_LENGTH ];              // Define the message buffer out of the while loop so we dont have to realocate :)
 
-        while (ReciveThread_isRunning && Connected)
+        while ( ReciveThread_isRunning && Connected)
         {
-            // recive irst to bytes to see how long the message is
-            socket.Receive( mesLenBuffer, 0, 2, SocketFlags.None );
+            // recive first bytes to see how long the message is
+            socket.Receive( mesLenBuffer, 0, MESSAGE_LEN_PACKAGE_SIZE, SocketFlags.None );
+            // Get the next byte to see what data the message contatines
+            socket.Receive( mesTypeBuffer, 0, MESSAGE_TYPE_PACKAGE_SIZE, SocketFlags.None );
 
-            if ( System.BitConverter.IsLittleEndian )
-                System.Array.Reverse( mesLenBuffer );
+            // make sure the received value is in the correct endian
+            ConvertBytes( ref mesLenBuffer );
+            ConvertBytes( ref mesTypeBuffer );
 
-            //int messageLen = System.BitConverter.ToInt32(mesLenBuffer, 0);
-
+            int messageLen = System.BitConverter.ToInt32(mesLenBuffer, 0);
+            char messageIdenity = System.BitConverter.ToChar( mesTypeBuffer, 0 );
             
-            int messageLen = 0;// encoder.GetString( mesLenBuffer );
+            if ( messageLen > MESSAGE_MAX_LENGTH )
+            {
+                // TODO: send the message back to server so it can be loged as a fatal error
+                // Or should i just realocate?
+                Debug.LogErrorFormat("FATAL ERROR: Message has exceded the max message size. The message has been loged, and discarded as a result! (Max message size: {0} Received message size: {1})", 
+                                      MESSAGE_MAX_LENGTH, messageLen);
+                continue;
 
-            foreach ( byte b in mesLenBuffer )
-                messageLen += (int)b;
-                
+            }
 
-            Debug.LogWarning(messageLen);
+            Debug.LogWarningFormat("Recived message Len {0}; Message Type {1}; ", messageLen, messageIdenity);
+
             // receive the message
-            int result = socket.Receive( buffer, 0, messageLen, SocketFlags.None );
-            string data = encoder.GetString( buffer, 0, messageLen );
+            int result = socket.Receive( mesBuffer, 0, messageLen, SocketFlags.None );
+            string message = encoder.GetString( mesBuffer, 0, result );
 
-            inboundQueue.Enqueue( (object)data );
+            BaseProtocol protocol = HandleProtocol.ConvertJson( messageIdenity, message );
+
+            inboundQueue.Enqueue( (object)protocol );
+
         }
 
         ReciveThread_isRunning = false;
@@ -274,6 +293,18 @@ public class SocketClient : MonoBehaviour
         }
 
         SendThread_isRunning = false;
+
+    }
+
+    /// <summary>
+    /// converts bytes to the correct endian is necessary
+    /// </summary>
+    /// <param name="bytes"></param>
+    void ConvertBytes( ref byte[] bytes )
+    {
+
+        if ( System.BitConverter.IsLittleEndian && !LITTLE_BYTE_ORDER || !System.BitConverter.IsLittleEndian && LITTLE_BYTE_ORDER )
+            System.Array.Reverse( bytes );
 
     }
 

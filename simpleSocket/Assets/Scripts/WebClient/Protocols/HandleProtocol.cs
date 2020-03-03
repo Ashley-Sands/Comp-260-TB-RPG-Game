@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Protocol;
+
 
 namespace Protocol 
 {
@@ -72,12 +72,18 @@ namespace Protocol
 
         }
 
+        public void InvokeProtocol( BaseProtocol proto )
+        {
+            protocolEvents[ proto.Idenity ].Invoke( proto );
+        }
+
         /// <summary>
-        /// Handles json string as idenity
+        /// Handles json string as idenity.
         /// </summary>
         /// <param name="idenity">idenity of the json string</param>
         /// <param name="json">json string of idenity</param>
-        public void HandleJson ( char idenity, string json)
+        /// <returns> protocol. null if protocol does not exist</returns>
+        public static BaseProtocol ConvertJson ( char idenity, string json)
         {
 
             BaseProtocol newProto;
@@ -89,11 +95,10 @@ namespace Protocol
                     break;
                 default:    // Not found
                     Debug.LogErrorFormat( "Unable to handle json, Failed to identify protocol {0}", idenity );
-                    return;
+                    return null;
             }
 
-            if ( newProto != null )
-                protocolEvents[idenity].Invoke( newProto );
+            return newProto;
 
         }
 
