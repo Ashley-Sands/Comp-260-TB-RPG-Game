@@ -15,7 +15,7 @@ public class SocketClient : MonoBehaviour
     private const int   MESSAGE_MAX_LENGTH          = 1024;
     private const bool  LITTLE_BYTE_ORDER           = false;
 
-    //public static SocketClient ActiveSocket { get; private set; }   // Do we really need this
+    public static SocketClient ActiveSocket { get; private set; } 
 
 	private ASCIIEncoding encoder = new ASCIIEncoding();
 
@@ -128,7 +128,7 @@ public class SocketClient : MonoBehaviour
 
     private void Awake ()
     {
-        //ActiveSocket = this;
+        ActiveSocket = this;
     }
     // Start is called before the first frame update
     void Start()
@@ -171,28 +171,6 @@ public class SocketClient : MonoBehaviour
             BaseProtocol protocol = inboundQueue.Dequeue() as BaseProtocol;
             HandleProtocol.Inst.InvokeProtocol( protocol );
         }
-
-    }
-
-    public string GetMessage ()
-    {
-        if ( HasMessages )
-            return inboundQueue.Dequeue() as string;
-        else
-            return "";
-    }
-
-    public string[] GetMessages ()
-    {
-        List<string> messages = new List<string>();
-
-        while ( HasMessages )
-        {
-            messages.Add( inboundQueue.Dequeue() as string );
-            Debug.LogWarning(messages[messages.Count-1]);
-        }
-
-        return messages.ToArray();
 
     }
 
