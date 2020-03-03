@@ -143,12 +143,11 @@ public class SocketClient : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        // TODO: Review...
+        // check that the required threads are running
         if (!Connecting && !Connected)  // connect
         {
             Connecting = true;
-            connectThread = new Thread(Connect);
+            connectThread = new Thread( Connect );
             connectThread.Start();
         }
         
@@ -164,6 +163,13 @@ public class SocketClient : MonoBehaviour
             SendThread_isRunning = true;
             sendThread = new Thread( SendMessage );
             sendThread.Start();
+        }
+
+        // process the inbound queue
+        while (inboundQueue.Count > 0)
+        {
+            BaseProtocol protocol = inboundQueue.Dequeue() as BaseProtocol;
+            HandleProtocol.Inst.InvokeProtocol( protocol );
         }
 
     }
