@@ -128,7 +128,7 @@ public class SocketClient : MonoBehaviour
 
     private void Awake ()
     {
-        ActiveSocket = this;
+        //ActiveSocket = this;
     }
     // Start is called before the first frame update
     void Start()
@@ -266,33 +266,46 @@ public class SocketClient : MonoBehaviour
     private void SendMessage ()
     {
 
-        Debug.Log( "Sending "+ outboundQueue.Count );
+        Debug.LogFormat( "Started Sending {0} messages ", outboundQueue.Count );
 
-        while ( SendThread_isRunning && Connected )
+        while ( outboundQueue.Count > 0 )
         {
-            while ( outboundQueue.Count > 0 )
-            {
-                string data = outboundQueue.Dequeue() as string;
-                byte[] intBytes_ = System.BitConverter.GetBytes( data.Length );
-                byte[] intBytes = new byte[ 2 ];
+            BaseProtocol protocol = outboundQueue.Dequeue() as BaseProtocol;
+            string data = protocol.GetJson( out int messageLength );
 
+            byte[] dataLenBytes_ = System.BitConverter.GetBytes( messageLength );
+            byte[] dataIdenityBytes_ = System.BitConverter.GetBytes( protocol.Idenity );
 
-                if ( System.BitConverter.IsLittleEndian )   // We are working with Big endian
-                    System.Array.Reverse(intBytes);
+            byte[] dataLenBytes = new byte[ MESSAGE_LEN_PACKAGE_SIZE ];
+            byte[] dataIdenityBytes = new byte[ MESSAGE_TYPE_PACKAGE_SIZE ];
 
-                intBytes[ 0 ] = intBytes_[ 1 ];
-                intBytes[ 1 ] = intBytes_[ 0 ];
+            // TODO: Make this work for different packet sizes
+            // Get the bytes that we need
+            // We are working with Big endian on the server :)
+            if ( System.BitConverter.IsLittleEndian )   
+            {   // use first two bytes reversed for little endian
+                dataLenBytes[ 0 ] = dataLenBytes_[ 1 ];
+                dataLenBytes[ 1 ] = dataLenBytes_[ 0 ];
+                dataIdenityBytes[ 0 ] = dataIdenityBytes_[ 0 ];
 
-
-                Debug.LogWarning("sending message of len"+ data.Length + " int bytes size " + intBytes.Length);
-
-                socket.Send( intBytes ); // send the length of the message
-                socket.Send( encoder.GetBytes( data ) );                    // send the message
-                Debug.Log( "Sent "+data );
             }
-        }
+            else
+            {   // use last two bytes for big endian
+                dataLenBytes[ 0 ] = dataLenBytes_[ 3 ];
+                dataLenBytes[ 1 ] = dataLenBytes_[ 4 ];
+                dataIdenityBytes[ 0 ] = dataIdenityBytes_[ 4 ];
+            }
 
+            Debug.LogWarningFormat("Sending mesage Length: {0}; Idenity: {1}", messageLength, protocol.Idenity);
+
+            socket.Send( dataLenBytes );                                    // send the length of the message
+            socket.Send( dataIdenityBytes );                                // send the idenity of the message
+            socket.Send( encoder.GetBytes( data ) );                        // send the message
+
+        }
+      
         SendThread_isRunning = false;
+        Debug.Log( "Send Message thread finished!" );
 
     }
 
