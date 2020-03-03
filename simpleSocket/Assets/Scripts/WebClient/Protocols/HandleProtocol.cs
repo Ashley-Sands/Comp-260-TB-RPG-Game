@@ -22,12 +22,20 @@ namespace Protocol
 
         }
 
+        private static HandleProtocol inst;
+        public static HandleProtocol Inst {
+            get {
+                if ( inst == null )
+                    inst = new HandleProtocol();
+
+                return inst;
+            }
+
+        }
+
         Dictionary<char, ProtocolEvent> protocolEvents;
-        
-        /// <summary>
-        /// Initial setup
-        /// </summary>
-        void Init()
+
+        private HandleProtocol ()
         {
             protocolEvents = new Dictionary<char, ProtocolEvent>
             {
