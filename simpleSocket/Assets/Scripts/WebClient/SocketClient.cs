@@ -159,14 +159,13 @@ public class SocketClient : MonoBehaviour
             receiveThread.Start(); 
         }
 
-        if ( Connected && !SendThread_isRunning )
+        if ( Connected && outboundQueue.Count > 0 && !SendThread_isRunning )
         {
             SendThread_isRunning = true;
             sendThread = new Thread( SendMessage );
             sendThread.Start();
         }
 
-        
     }
 
     public string GetMessage ()
