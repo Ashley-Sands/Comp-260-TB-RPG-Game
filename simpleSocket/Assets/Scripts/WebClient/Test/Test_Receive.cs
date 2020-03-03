@@ -6,22 +6,26 @@ public class Test_Receive : MonoBehaviour
 {
 	[SerializeField] private TMPro.TextMeshProUGUI textOutput;
 
-	private void Update ()
+	private void Awake ()
 	{
-		string message = SocketClient.ActiveSocket.GetMessage();
-		if (message.Length > 0)
-		{
-			print( message.Length + " ~~~~ " + message[ message.Length - 1 ] );
+		Protocol.HandleProtocol.Inst.Bind('m', ReceiveMessage );
+	}
 
-			string text = textOutput.text.ToString();
-			Debug.Log( "fdsf@@ "+text );
-			Debug.LogWarning( "@@@"+ message + text );
-			Debug.Log( "###"+text );
+	private void ReceiveMessage( Protocol.BaseProtocol protocol )
+	{
+		Protocol.MessageProtocol message = protocol as Protocol.MessageProtocol;
 
-			textOutput.text = message +"\n"+ text;
+		string text = textOutput.text.ToString();
 
-		}
+		textOutput.text = message.message + "\n" + text;
 
+		Debug.LogFormat( "Recived message: {0} Len: {1}", message.message, message.message.Length );
+
+	}
+
+	private void OnDestroy ()
+	{
+		Protocol.HandleProtocol.Inst.Unbind('m', ReceiveMessage );
 	}
 
 }
