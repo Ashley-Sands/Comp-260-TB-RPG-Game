@@ -162,6 +162,14 @@ public class SocketClient : MonoBehaviour
         
     }
 
+    public string GetMessage ()
+    {
+        if ( HasMessages )
+            return inboundQueue.Dequeue() as string;
+        else
+            return "";
+    }
+
     public string[] GetMessages ()
     {
         List<string> messages = new List<string>();
@@ -176,15 +184,7 @@ public class SocketClient : MonoBehaviour
 
     }
 
-    public string GetMessage()
-    {
-        if ( HasMessages )
-            return inboundQueue.Dequeue() as string;
-        else
-            return "";
-    }
-
-    public void SetMessage( string message )
+    public void QueueMessage( string message )
     {
         outboundQueue.Enqueue( message as object );
     }
