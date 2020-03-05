@@ -11,5 +11,10 @@ namespace Protocol
 
         public string message = "";
 
+        public MessageProtocol( string _message )
+        {
+            message = _message;
+        }
+
     }
 }
