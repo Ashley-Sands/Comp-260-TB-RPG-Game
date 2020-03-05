@@ -11,7 +11,9 @@ public class Test_sendMessage : MonoBehaviour
 	public void SendMessageToServer()
 	{
 
-		SocketClient.ActiveSocket.QueueMessage( textInput.text );
+		Protocol.MessageProtocol message = new Protocol.MessageProtocol( textInput.text );
+
+		SocketClient.ActiveSocket.QueueMessage( message as object );
 
 		textInput.text = "";
 

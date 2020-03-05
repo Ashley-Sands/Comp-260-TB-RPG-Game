@@ -20,7 +20,7 @@ public class MoveAgent : MonoBehaviour
     void Update ()
     {
 
-        print( Vector3.Distance( transform.position, loc ) + " < " + stopDist );
+//        print( Vector3.Distance( transform.position, loc ) + " < " + stopDist );
 
         if ( followMouse || Input.GetMouseButtonDown( 0 ) )
         {

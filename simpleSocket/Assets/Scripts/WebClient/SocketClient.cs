@@ -174,9 +174,9 @@ public class SocketClient : MonoBehaviour
 
     }
 
-    public void QueueMessage( string message )
+    public void QueueMessage( object message )
     {
-        outboundQueue.Enqueue( message as object );
+        outboundQueue.Enqueue( message );
     }
 
     private void Connect()
@@ -215,7 +215,11 @@ public class SocketClient : MonoBehaviour
 
             // make sure the received value is in the correct endian
             ConvertBytes( ref mesLenBuffer );
-            ConvertBytes( ref mesTypeBuffer );
+            //ConvertBytes( ref mesTypeBuffer );
+
+            // if would apear that if we have an invaild connection bitconverter fails.
+            // TODO: fix this. its the whole reciveing 0 bytes thing. 
+            // I would love to do it now but its 1am and iv got to get up erly :`(
 
             int messageLen = System.BitConverter.ToInt32(mesLenBuffer, 0);
             char messageIdenity = System.BitConverter.ToChar( mesTypeBuffer, 0 );
@@ -253,7 +257,7 @@ public class SocketClient : MonoBehaviour
 
         while ( outboundQueue.Count > 0 )
         {
-            BaseProtocol protocol = outboundQueue.Dequeue() as BaseProtocol;
+            BaseProtocol protocol = (BaseProtocol)outboundQueue.Dequeue();
             string data = protocol.GetJson( out int messageLength );
 
             byte[] dataLenBytes_ = System.BitConverter.GetBytes( messageLength );
