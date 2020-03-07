@@ -202,14 +202,16 @@ public class SocketClient : MonoBehaviour
     private void ReciveMessage()
     {
 
-        byte[] mesLenBuffer = new byte[ MESSAGE_LEN_PACKAGE_SIZE ];
-        byte[] mesTypeBuffer = new byte[ MESSAGE_TYPE_PACKAGE_SIZE ];
+        byte[] mesLenBuffer = new byte[ 4 ]; // MESSAGE_LEN_PACKAGE_SIZE ];
+        byte[] mesTypeBuffer = new byte[ 4 ]; // MESSAGE_TYPE_PACKAGE_SIZE ];
         byte[] mesBuffer = new byte[ MESSAGE_MAX_LENGTH ];              // Define the message buffer out of the while loop so we dont have to realocate :)
 
         while ( ReciveThread_isRunning && Connected)
         {
+            print( "RUNNING" );
             // recive first bytes to see how long the message is
             socket.Receive( mesLenBuffer, 0, MESSAGE_LEN_PACKAGE_SIZE, SocketFlags.None );
+            print( "Bytes" );
             // Get the next byte to see what data the message contatines
             socket.Receive( mesTypeBuffer, 0, MESSAGE_TYPE_PACKAGE_SIZE, SocketFlags.None );
 
@@ -223,7 +225,9 @@ public class SocketClient : MonoBehaviour
 
             int messageLen = System.BitConverter.ToInt32(mesLenBuffer, 0);
             char messageIdenity = System.BitConverter.ToChar( mesTypeBuffer, 0 );
-            
+
+            print( "Receiving message type: " + messageIdenity + "::" + mesLenBuffer.ToString() );
+
             if ( messageLen > MESSAGE_MAX_LENGTH )
             {
                 // TODO: send the message back to server so it can be loged as a fatal error
@@ -265,14 +269,15 @@ public class SocketClient : MonoBehaviour
 
             byte[] dataLenBytes = new byte[ MESSAGE_LEN_PACKAGE_SIZE ];
             byte[] dataIdenityBytes = new byte[ MESSAGE_TYPE_PACKAGE_SIZE ];
-
+            /*
             // TODO: Make this work for different packet sizes
             // Get the bytes that we need
             // We are working with Big endian on the server :)
             if ( System.BitConverter.IsLittleEndian )   
             {   // use first two bytes reversed for little endian
+                byte tempByte = dataLenBytes[ 0 ];
                 dataLenBytes[ 0 ] = dataLenBytes_[ 1 ];
-                dataLenBytes[ 1 ] = dataLenBytes_[ 0 ];
+                dataLenBytes[ 1 ] = tempByte;
                 dataIdenityBytes[ 0 ] = dataIdenityBytes_[ 0 ];
 
             }
@@ -282,7 +287,7 @@ public class SocketClient : MonoBehaviour
                 dataLenBytes[ 1 ] = dataLenBytes_[ 4 ];
                 dataIdenityBytes[ 0 ] = dataIdenityBytes_[ 4 ];
             }
-
+            */
             Debug.LogWarningFormat("Sending mesage Length: {0}; Idenity: {1}", messageLength, protocol.Idenity);
 
             socket.Send( dataLenBytes );                                    // send the length of the message
@@ -303,8 +308,12 @@ public class SocketClient : MonoBehaviour
     void ConvertBytes( ref byte[] bytes )
     {
 
-        if ( System.BitConverter.IsLittleEndian && !LITTLE_BYTE_ORDER || !System.BitConverter.IsLittleEndian && LITTLE_BYTE_ORDER )
-            System.Array.Reverse( bytes );
+        if ( System.BitConverter.IsLittleEndian )
+        {   // use first two bytes reversed for little endian
+            byte tempByte = bytes[ 0 ];
+            bytes[ 0 ] = bytes[ 1 ];
+            bytes[ 1 ] = tempByte;
+        }
 
     }
 
