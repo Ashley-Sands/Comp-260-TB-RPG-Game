@@ -38,8 +38,10 @@ namespace Protocol
         private HandleProtocol ()
         {
             protocolEvents = new Dictionary<char, ProtocolEvent>
-            {
-                { 'm', new ProtocolEvent() }
+            {    
+                { 'm', new ProtocolEvent() },
+                { 's', new ProtocolEvent() }
+                // Dont forget to add it to Convert json as well :)
             };
 
         }
@@ -100,6 +102,9 @@ namespace Protocol
             {
                 case 'm':   // message 
                     newProto = JsonUtility.FromJson<MessageProtocol>( json );
+                    break;
+                case 's':   // client status
+                    newProto = JsonUtility.FromJson<ClientStatusProtocol>( json );
                     break;
                 default:    // Not found
                     Debug.LogErrorFormat( "Unable to handle json, Failed to identify protocol {0}", idenity );

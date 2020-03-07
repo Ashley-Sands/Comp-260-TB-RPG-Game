@@ -10,6 +10,8 @@ namespace Protocol
         public abstract char Idenity { get; }
         public abstract string Name { get; }
 
+        public string from_client = "";         // This is only used when reciveing messages!
+
         private int chached_jsonLength = 0;
 
         /// <summary>
