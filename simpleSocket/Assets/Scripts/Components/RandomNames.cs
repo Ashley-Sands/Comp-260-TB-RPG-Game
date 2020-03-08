@@ -65,9 +65,10 @@ public class RandomNames : ScriptableObject
     {
 
         string fName = adjectives[ Random.Range( 0, adjectives.Length ) ];
-        string lName = adjectives[ Random.Range( 0, adjectives.Length ) ];
+        string mName = nouns[ Random.Range( 0, nouns.Length ) ];
+        string lName = nouns[ Random.Range( 0, nouns.Length ) ];
 
-        return string.Format( "{0} {1}", fName, lName );
+        return string.Format( "{0} {1} {2}", fName, mName, lName );
 
     }
     

@@ -9,9 +9,13 @@ public class SetTextFeildOnStart : MonoBehaviour
     [SerializeField] private TMP_InputField textInput;
     [SerializeField] private RandomNames randomNames;
 
-    void Start()
+    void Start ()
     {
-        
+        GetRandomName();
+    }
+
+    public void GetRandomName()
+    { 
         if ( textInput == null || randomNames == null)
         {
             Debug.LogError("Unable to set random name, either textinput or randomnames is missing");
