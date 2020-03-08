@@ -41,8 +41,9 @@ namespace Protocol
             {    
                 { 'm', new ProtocolEvent() },   // message
                 { 's', new ProtocolEvent() },   // client status
-                { 'i', new ProtocolEvent() },    // client identity
-                { 'g', new ProtocolEvent() }
+                { 'S', new ProtocolEvent() },   // server status
+                { 'i', new ProtocolEvent() },   // client identity
+                { 'g', new ProtocolEvent() }    // game request
                 // Dont forget to add it to Convert json as well :)
             };
 
@@ -107,6 +108,9 @@ namespace Protocol
                     break;
                 case 's':   // client status
                     newProto = JsonUtility.FromJson<ClientStatusProtocol>( json );
+                    break;
+                case 'S':   // client status
+                    newProto = JsonUtility.FromJson<ServerStatusProtocol>( json );
                     break;
                 case 'i':   // client status
                     newProto = JsonUtility.FromJson<ClientIdentity>( json );

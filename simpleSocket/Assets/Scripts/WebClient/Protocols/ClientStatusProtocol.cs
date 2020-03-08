@@ -22,4 +22,13 @@ namespace Protocol
         public bool connected = false;
 
     }
+
+    public class ServerStatusProtocol : BaseProtocol
+    {
+        public override char Identity => 'S';
+        public override string Name => "serverStatus";
+
+        public bool ok = false;
+
+    }
 }
