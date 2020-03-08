@@ -2,17 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameData : MonoBehaviour
+[CreateAssetMenu( fileName = "GameData", menuName = "GameData" )]
+public class GameData : ScriptableObject
 {
-    // Start is called before the first frame update
-    void Start()
+
+    public string nickname = "player";
+
+    private void OnEnable ()
     {
-        
+        Protocol.HandleProtocol.Inst.Bind( 'i', ReciveClientIdentityRequest );
     }
 
-    // Update is called once per frame
-    void Update()
+    private void ReciveClientIdentityRequest ( Protocol.BaseProtocol protocol )
     {
-        
+
+        // fill in the info and send it back to the sever
+        Protocol.ClientIdentity clientIdentity = protocol as Protocol.ClientIdentity;
+
+        clientIdentity.nickname = nickname;
+
+        SocketClient.ActiveSocket.QueueMessage( clientIdentity as object );
+
     }
+
+    private void OnDisable ()
+    {
+        Protocol.HandleProtocol.Inst.Unbind( 'i', ReciveClientIdentityRequest );
+
+    }
+
+
 }
