@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Protocol;
 
-public class SocketClient : MonoBehaviour
+public class SocketClient 
 {
 
     private const int   MESSAGE_LEN_PACKAGE_SIZE    = 2;
@@ -15,7 +15,16 @@ public class SocketClient : MonoBehaviour
     private const int   MESSAGE_MAX_LENGTH          = 1024;
     private const bool  LITTLE_BYTE_ORDER           = false;
 
-    public static SocketClient ActiveSocket { get; private set; } 
+    private static SocketClient activeSocket = null;
+    public static SocketClient ActiveSocket { 
+        get {
+                if ( activeSocket == null )
+                    activeSocket = new SocketClient();
+
+                return activeSocket;
+        }
+    
+    } 
 
 	private ASCIIEncoding encoder = new ASCIIEncoding();
 
@@ -126,12 +135,8 @@ public class SocketClient : MonoBehaviour
 
     }
 
-    private void Awake ()
-    {
-        ActiveSocket = this;
-    }
     // Start is called before the first frame update
-    void Start()
+    private SocketClient()
     {
 
         // start the synchronized queues
@@ -208,10 +213,10 @@ public class SocketClient : MonoBehaviour
 
         while ( ReciveThread_isRunning && Connected)
         {
-            print( "RUNNING" );
+            Debug.Log( "RUNNING" );
             // recive first bytes to see how long the message is
             socket.Receive( mesLenBuffer, 0, MESSAGE_LEN_PACKAGE_SIZE, SocketFlags.None );
-            print( "Bytes" );
+            Debug.Log( "Bytes" );
             // Get the next byte to see what data the message contatines
             socket.Receive( mesTypeBuffer, 0, MESSAGE_TYPE_PACKAGE_SIZE, SocketFlags.None );
 
@@ -226,7 +231,7 @@ public class SocketClient : MonoBehaviour
             int messageLen = System.BitConverter.ToInt32(mesLenBuffer, 0);
             char messageIdenity = System.BitConverter.ToChar( mesTypeBuffer, 0 );
 
-            print( "Receiving message type: " + messageIdenity + "::" + mesLenBuffer.ToString() );
+            Debug.Log( "Receiving message type: " + messageIdenity + "::" + mesLenBuffer.ToString() );
 
             if ( messageLen > MESSAGE_MAX_LENGTH )
             {
@@ -247,7 +252,7 @@ public class SocketClient : MonoBehaviour
             BaseProtocol protocol = HandleProtocol.ConvertJson( messageIdenity, message );
 
             inboundQueue.Enqueue( (object)protocol );
-            print( message );
+            Debug.Log( message );
         }
 
         ReciveThread_isRunning = false;
@@ -272,7 +277,7 @@ public class SocketClient : MonoBehaviour
 
             for ( int i = 0; i < dataLenBytes_.Length; i++ )
             {
-                print( (int)dataLenBytes_[ i ] );// + " :: " + (char)dataIdenityBytes_[ i ]); 
+                Debug.Log( (int)dataLenBytes_[ i ] );// + " :: " + (char)dataIdenityBytes_[ i ]); 
             }
             
             // TODO: Make this work for different packet sizes
