@@ -68,7 +68,7 @@ public class RandomNames : ScriptableObject
         string mName = nouns[ Random.Range( 0, nouns.Length ) ];
         string lName = nouns[ Random.Range( 0, nouns.Length ) ];
 
-        return string.Format( "{0} {1} {2}", fName, mName, lName );
+        return string.Format( "{0} {1} {2}", fName, mName, lName ).Capitalize();
 
     }
     
