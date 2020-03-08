@@ -33,6 +33,7 @@ public class SocketClient : MonoBehaviour
     private readonly string hostIp = "127.0.0.1";
     private readonly int port = 8222;
 
+    public bool running = false;    // need to add this to the threads.
     private bool connecting = false;
     private bool connected = false;
 
@@ -152,6 +153,9 @@ public class SocketClient : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if ( !running ) return;
+
         // check that the required threads are running
         if (!Connecting && !Connected)  // connect
         {
