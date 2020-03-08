@@ -282,6 +282,7 @@ GameObject:
   - component: {fileID: 68303766}
   - component: {fileID: 68303768}
   - component: {fileID: 68303767}
+  - component: {fileID: 68303769}
   m_Layer: 0
   m_Name: Ui Functions
   m_TagString: Untagged
@@ -356,6 +357,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8867bf10d14d89f4da584b0f1b374eb5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &68303769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 68303763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 985670a1000c9714491cb5b8442d4368, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &263265656
@@ -657,6 +670,17 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 68303767}
         m_MethodName: SetPlayerNickname
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 68303769}
+        m_MethodName: ConnectSocket
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
