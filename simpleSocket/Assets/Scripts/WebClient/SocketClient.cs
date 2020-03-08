@@ -247,7 +247,7 @@ public class SocketClient : MonoBehaviour
             BaseProtocol protocol = HandleProtocol.ConvertJson( messageIdenity, message );
 
             inboundQueue.Enqueue( (object)protocol );
-
+            print( message );
         }
 
         ReciveThread_isRunning = false;
