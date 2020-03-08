@@ -4,10 +4,19 @@ using UnityEngine;
 
 namespace Protocol
 {
+    public class ClientIdentity : BaseProtocol
+    {
+        public override char Identity => 'i';
+        public override string Name => "Client Identity";
+
+        public string nickname = "";
+
+    }
+
     public class ClientStatusProtocol : BaseProtocol
     {
 
-        public override char Idenity => 's';
+        public override char Identity => 's';
         public override string Name => "clientStatus";
 
         public bool connected = false;

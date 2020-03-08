@@ -7,7 +7,7 @@ namespace Protocol
 
     public abstract class BaseProtocol
     {
-        public abstract char Idenity { get; }
+        public abstract char Identity { get; }
         public abstract string Name { get; }
 
         public string from_client = "";         // This is only used when reciveing messages!

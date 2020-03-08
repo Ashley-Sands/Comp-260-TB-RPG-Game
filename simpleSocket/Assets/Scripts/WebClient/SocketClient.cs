@@ -265,7 +265,7 @@ public class SocketClient : MonoBehaviour
             string data = protocol.GetJson( out int messageLength );
 
             byte[] dataLenBytes_ = System.BitConverter.GetBytes( messageLength );
-            byte[] dataIdenityBytes_ = System.BitConverter.GetBytes( protocol.Idenity );
+            byte[] dataIdenityBytes_ = System.BitConverter.GetBytes( protocol.Identity );
 
             byte[] dataLenBytes = new byte[ MESSAGE_LEN_PACKAGE_SIZE ];
             byte[] dataIdenityBytes = new byte[ MESSAGE_TYPE_PACKAGE_SIZE ];
@@ -292,7 +292,7 @@ public class SocketClient : MonoBehaviour
                 dataIdenityBytes[ 0 ] = dataIdenityBytes_[ 4 ];
             }
             
-            Debug.LogWarningFormat("Sending mesage Length: {0}; Idenity: {1}", messageLength, protocol.Idenity);
+            Debug.LogWarningFormat("Sending mesage Length: {0}; Idenity: {1}", messageLength, protocol.Identity);
 
             socket.Send( dataLenBytes );                                    // send the length of the message
             socket.Send( dataIdenityBytes );                                // send the idenity of the message

@@ -6,7 +6,7 @@ namespace Protocol
 {
     public class MessageProtocol : BaseProtocol
     {
-        public override char Idenity => 'm';
+        public override char Identity => 'm';
         public override string Name => "sendMessage";
 
         public string message = "";

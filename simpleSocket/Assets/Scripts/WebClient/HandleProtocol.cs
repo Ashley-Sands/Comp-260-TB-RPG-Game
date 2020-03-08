@@ -39,8 +39,9 @@ namespace Protocol
         {
             protocolEvents = new Dictionary<char, ProtocolEvent>
             {    
-                { 'm', new ProtocolEvent() },
-                { 's', new ProtocolEvent() }
+                { 'm', new ProtocolEvent() },   // message
+                { 's', new ProtocolEvent() },   // client status
+                { 'i', new ProtocolEvent() }    // client identity
                 // Dont forget to add it to Convert json as well :)
             };
 
@@ -84,7 +85,7 @@ namespace Protocol
 
         public void InvokeProtocol( BaseProtocol proto )
         {
-            protocolEvents[ proto.Idenity ].Invoke( proto );
+            protocolEvents[ proto.Identity ].Invoke( proto );
         }
 
         /// <summary>
@@ -105,6 +106,9 @@ namespace Protocol
                     break;
                 case 's':   // client status
                     newProto = JsonUtility.FromJson<ClientStatusProtocol>( json );
+                    break;
+                case 'i':   // client status
+                    newProto = JsonUtility.FromJson<ClientIdentity>( json );
                     break;
                 default:    // Not found
                     Debug.LogErrorFormat( "Unable to handle json, Failed to identify protocol {0}", idenity );
