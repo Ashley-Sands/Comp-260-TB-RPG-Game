@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Protocol;
 
-public class SocketClient 
+public class SocketClient : MonoBehaviour
 {
 
     private const int   MESSAGE_LEN_PACKAGE_SIZE    = 2;
@@ -135,8 +135,12 @@ public class SocketClient
 
     }
 
-    // Start is called before the first frame update
-    private SocketClient()
+    private void Awake ()
+    {
+        activeSocket = this;
+        DontDestroyOnLoad( this );
+    }
+    private void Start()
     {
 
         // start the synchronized queues
