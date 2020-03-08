@@ -282,11 +282,6 @@ public class SocketClient : MonoBehaviour
 
             byte[] dataLenBytes = new byte[ MESSAGE_LEN_PACKAGE_SIZE ];
             byte[] dataIdenityBytes = new byte[ MESSAGE_TYPE_PACKAGE_SIZE ];
-
-            for ( int i = 0; i < dataLenBytes_.Length; i++ )
-            {
-                Debug.Log( (int)dataLenBytes_[ i ] );// + " :: " + (char)dataIdenityBytes_[ i ]); 
-            }
             
             // TODO: Make this work for different packet sizes
             // Get the bytes that we need
