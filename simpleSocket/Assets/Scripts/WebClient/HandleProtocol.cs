@@ -41,7 +41,8 @@ namespace Protocol
             {    
                 { 'm', new ProtocolEvent() },   // message
                 { 's', new ProtocolEvent() },   // client status
-                { 'i', new ProtocolEvent() }    // client identity
+                { 'i', new ProtocolEvent() },    // client identity
+                { 'g', new ProtocolEvent() }
                 // Dont forget to add it to Convert json as well :)
             };
 
@@ -109,6 +110,9 @@ namespace Protocol
                     break;
                 case 'i':   // client status
                     newProto = JsonUtility.FromJson<ClientIdentity>( json );
+                    break;
+                case 'g':   // client status
+                    newProto = JsonUtility.FromJson<GameRequestProtocol>( json );
                     break;
                 default:    // Not found
                     Debug.LogErrorFormat( "Unable to handle json, Failed to identify protocol {0}", idenity );
