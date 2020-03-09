@@ -7,6 +7,7 @@ public class ToggleConnectionStatus : MonoBehaviour
 
     [SerializeField] private GameObject connectingUI;
     [SerializeField] private GameObject errorUI;
+    [SerializeField] private GameObject holdUI;
 
     [SerializeField] private GameData gameData;
 
@@ -19,6 +20,7 @@ public class ToggleConnectionStatus : MonoBehaviour
 
     private void ConnectionStatusChanged( ConnectionStatus status )
     {
+
         if ( status == ConnectionStatus.Connecting )
             ToggleUiComps( true, false );
         else if ( status == ConnectionStatus.Error )
@@ -30,8 +32,12 @@ public class ToggleConnectionStatus : MonoBehaviour
 
     private void ToggleUiComps( bool showConnUI, bool showErrorUI )
     {
+
+        holdUI.SetActive( showConnUI || showErrorUI );
+
         connectingUI.SetActive( showConnUI );
         errorUI.SetActive( showErrorUI );
+
     }
 
     private void OnDestroy()

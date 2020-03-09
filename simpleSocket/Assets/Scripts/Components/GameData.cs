@@ -6,6 +6,8 @@ using UnityEngine;
 public class GameData : ScriptableObject
 {
 
+    public const string GAME_CLIENT_NAME = "GAME";  // this is used as the 'from_client' (in BaseProtocol) when the game needs to add inbound messages to queue.
+
     public delegate void connectionStatusChanged ( ConnectionStatus status );
     public event connectionStatusChanged ConnectionStatusChanged;           
 
