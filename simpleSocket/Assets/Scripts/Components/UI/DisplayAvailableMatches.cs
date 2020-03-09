@@ -123,10 +123,16 @@ class DisplayAvailableMatches : MonoBehaviour
 
 	public void JoinSelectedGame()
 	{
-		if ( selectedMatchId < 0 || selectedMatchId >- matchNames.Length ) return;
+		if ( selectedMatchId < 0 || selectedMatchId > -matchNames.Length )
+		{
+			Debug.LogError( "Nothing is selected" );
+			return;
+		}
 
 		JoinGameProtocol joinGame = new JoinGameProtocol();
 		joinGame.match_name = matchNames[ selectedMatchId ];
+
+		SocketClient.ActiveSocket.QueueMessage( joinGame );
 
 	}
 
