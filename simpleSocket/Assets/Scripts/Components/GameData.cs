@@ -51,7 +51,7 @@ public class GameData : ScriptableObject
 
     public void SetStatus( ConnectionStatus status )
     {
-        if (status != connStatus)
+        if (status != connStatus && connStatus != ConnectionStatus.Error)
         {
             Debug.Log( "Set status " + status );
 
@@ -59,6 +59,12 @@ public class GameData : ScriptableObject
             connStatus = status;
 
         }
+    }
+
+    public void ResetConnectionStatus()
+    {
+        connStatus = ConnectionStatus.None;
+        ConnectionStatusChanged?.Invoke( connStatus = ConnectionStatus.None );
     }
 
     private void OnDisable ()
