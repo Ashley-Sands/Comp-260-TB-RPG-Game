@@ -10,7 +10,7 @@ public class GameData : ScriptableObject
 {
 
     public delegate void connectionStatusChanged ( ConnectionStatus status );
-    public event connectionStatusChanged ConnectionStatusChanged;               // Make static ??
+    public event connectionStatusChanged ConnectionStatusChanged;           
 
     public string nickname = "player";
 
