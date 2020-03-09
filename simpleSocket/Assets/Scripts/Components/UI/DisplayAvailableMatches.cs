@@ -7,10 +7,15 @@ using Protocol;
 class DisplayAvailableMatches : MonoBehaviour
 {
 
+	public delegate void selectMatch ( int id );
+	public event selectMatch SelectMatch;
+
 	[SerializeField] private RectTransform buttonHold;
 	[SerializeField] private Button buttonPrefab;
 	[SerializeField] private Rect buttonSize;   // and spacing
 	[SerializeField] private int maxButtons = 4;
+
+	[SerializeField] private Color selectedColour = Color.gray;
 
 	private List<Button> buttons;
 	private string[] matchNames;
@@ -30,7 +35,7 @@ class DisplayAvailableMatches : MonoBehaviour
 		buttons = new List<Button>();
 
 		Rect buttonPosition = buttonSize;
-		
+		SelectMatch += ButtonAction;
 		// instancate buttons.
 		for ( int i = 0; i < maxButtons; i++ )
 		{
@@ -42,10 +47,11 @@ class DisplayAvailableMatches : MonoBehaviour
 
 			buttonPosition.position += new Vector2( 0, buttonSize.position.y + buttonSize.size.y );
 
-			butt.onClick.AddListener( () => ButtonAction( i ) ); 
+			int j = i;
+			butt.onClick.AddListener( () => SelectMatch?.Invoke( j ) );
+	
 
 			buttons.Add( butt );
-
 			SetButtonText( i, "Match Slot " +  ( maxButtons - i) );
 
 		}
@@ -84,9 +90,31 @@ class DisplayAvailableMatches : MonoBehaviour
 	private void ButtonAction( int buttonId )
 	{
 
-		if ( buttonId < matchNames.Length )
-			selectedMatchId = maxButtons - buttonId;
+		print( "------------------------------------- " + buttonId );
 
+		int matchId = ( maxButtons - 1 ) - buttonId;
+
+		if ( matchId < matchNames.Length )
+		{
+			if ( selectedMatchId > -1 )
+				SetButtonColour( (maxButtons - 1) - selectedMatchId, Color.white );
+
+			selectedMatchId = matchId;
+
+			SetButtonColour( buttonId, Color.grey );
+
+		}
+
+	}
+
+	void SetButtonColour( int buttonId, Color buttonColour )
+	{
+		ColorBlock col = buttons[ buttonId ].colors;
+		col.normalColor = buttonColour;
+		col.pressedColor = buttonColour;
+		col.highlightedColor = buttonColour;
+
+		buttons[ buttonId ].colors = col;
 	}
 
 	private void SetButtonText( int buttonId, string text )
@@ -99,6 +127,7 @@ class DisplayAvailableMatches : MonoBehaviour
 	{
 
 		HandleProtocol.Inst.Unbind( 'g', SetAvailableGames );
+		SelectMatch -= ButtonAction;
 
 	}
 

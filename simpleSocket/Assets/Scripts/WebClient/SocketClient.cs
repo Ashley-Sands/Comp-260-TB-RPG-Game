@@ -30,6 +30,7 @@ public class SocketClient : MonoBehaviour
     private bool _connecting = false;
     private bool _connected = false;
 
+    public float connectingCooldown;
     private float _reconnectCooldown = 0;
 
     public GameData gameData;
@@ -198,7 +199,7 @@ public class SocketClient : MonoBehaviour
             ReconnectCooldown -= Time.deltaTime;
 
         // check that the required threads are running
-        if ( ReconnectCooldown > 0 && !Connecting && !Connected )  // connect
+        if ( ReconnectCooldown <= 0 && !Connecting && !Connected )  // connect
         {
             gameData.SetStatus( ConnectionStatus.Connecting );
 
@@ -248,7 +249,8 @@ public class SocketClient : MonoBehaviour
             catch (System.Exception e)
             {
                 Debug.LogError( e );
-                ReconnectCooldown = 30;
+                ReconnectCooldown = connectingCooldown;
+                Connecting = false;
                 break;
             }
         }
