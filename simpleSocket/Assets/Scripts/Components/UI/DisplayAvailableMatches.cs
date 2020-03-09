@@ -71,9 +71,9 @@ class DisplayAvailableMatches : MonoBehaviour
 		{
 			
 			if (i >= matchNames.Length )
-				SetButtonText( i, "-" );
+				SetButtonText( ( maxButtons - (i+1) ), "-" );
 			else
-				SetButtonText( i, string.Format( " {0} [{1} slots available] ", matchNames[i], games.available_games) );
+				SetButtonText( ( maxButtons - (i+1) ), string.Format( " {0} [{1} slots available] ", matchNames[i], games.available_slots[i]) );
 
 		}
 

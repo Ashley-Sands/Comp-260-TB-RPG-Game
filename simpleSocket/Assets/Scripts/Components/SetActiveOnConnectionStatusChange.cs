@@ -18,11 +18,11 @@ public class SetActiveOnConnectionStatusChange : MonoBehaviour
 
     private void ConnectionStatusChanged ( ConnectionStatus status )
     {
+
         if ( status == activeStatus )
             obj.SetActive( true );
         else
             obj.SetActive( false );
-
 
     }
 
