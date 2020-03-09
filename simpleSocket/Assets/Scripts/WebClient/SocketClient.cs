@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Protocol;
 
+public enum ConnectionStatus { None, Connecting, Connected, Error }
+
 public class SocketClient : MonoBehaviour
 {
 
@@ -36,6 +38,8 @@ public class SocketClient : MonoBehaviour
     public bool running = false;    // need to add this to the threads.
     private bool connecting = false;
     private bool connected = false;
+
+    public GameData gameData;
 
     /// <summary>
     /// Thread safe method to see if we are attempting to connect
@@ -157,34 +161,39 @@ public class SocketClient : MonoBehaviour
         if ( !running ) return;
 
         // check that the required threads are running
-        if (!Connecting && !Connected)  // connect
+        if ( !Connecting && !Connected )  // connect
         {
+            gameData.SetStatus( ConnectionStatus.Connecting );
+
             Connecting = true;
             connectThread = new Thread( Connect );
             connectThread.Start();
         }
-        
-        if ( Connected && !ReciveThread_isRunning )
+        else if ( connected )
         {
-            ReciveThread_isRunning = true;
-            receiveThread = new Thread( ReciveMessage );
-            receiveThread.Start(); 
-        }
+            print( ConnectionStatus.Connected );
 
-        if ( Connected && outboundQueue.Count > 0 && !SendThread_isRunning )
-        {
-            SendThread_isRunning = true;
-            sendThread = new Thread( SendMessage );
-            sendThread.Start();
-        }
+            if ( !ReciveThread_isRunning )
+            {
+                ReciveThread_isRunning = true;
+                receiveThread = new Thread( ReciveMessage );
+                receiveThread.Start();
+            }
 
-        // process the inbound queue
-        while (inboundQueue.Count > 0)
-        {
-            BaseProtocol protocol = inboundQueue.Dequeue() as BaseProtocol;
-            HandleProtocol.Inst.InvokeProtocol( protocol );
-        }
+            if ( outboundQueue.Count > 0 && !SendThread_isRunning )
+            {
+                SendThread_isRunning = true;
+                sendThread = new Thread( SendMessage );
+                sendThread.Start();
+            }
 
+            // process the inbound queue
+            while ( inboundQueue.Count > 0 )
+            {
+                BaseProtocol protocol = inboundQueue.Dequeue() as BaseProtocol;
+                HandleProtocol.Inst.InvokeProtocol( protocol );
+            }
+        }
     }
 
     public void QueueMessage( object message )
@@ -203,6 +212,8 @@ public class SocketClient : MonoBehaviour
                 socket.Connect( new IPEndPoint( IPAddress.Parse( hostIp ), port ) );
                 Connected = socket.Connected;
                 Connecting = !Connected;
+                gameData.SetStatus( Connected ? ConnectionStatus.Connected : ConnectionStatus.Connecting );
+
             }
             catch (System.Exception e)
             {

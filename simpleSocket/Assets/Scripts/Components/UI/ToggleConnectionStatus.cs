@@ -19,7 +19,6 @@ public class ToggleConnectionStatus : MonoBehaviour
 
     private void ConnectionStatusChanged( ConnectionStatus status )
     {
-
         if ( status == ConnectionStatus.Connecting )
             ToggleUiComps( true, false );
         else if ( status == ConnectionStatus.Error )

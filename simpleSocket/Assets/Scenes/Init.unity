@@ -761,7 +761,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &558768244
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1221,6 +1221,7 @@ GameObject:
   - component: {fileID: 864765481}
   - component: {fileID: 864765483}
   - component: {fileID: 864765482}
+  - component: {fileID: 864765484}
   m_Layer: 5
   m_Name: Connection Status
   m_TagString: Untagged
@@ -1286,6 +1287,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 864765480}
   m_CullTransparentMesh: 0
+--- !u!114 &864765484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864765480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92730a8f1926da845bf9a9ad85c0121c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  connectingUI: {fileID: 520287381}
+  errorUI: {fileID: 558768243}
+  gameData: {fileID: 11400000, guid: 134e8cda908000d4186b7e58f08f068b, type: 2}
 --- !u!1 &1124515713
 GameObject:
   m_ObjectHideFlags: 0
@@ -2046,6 +2062,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   running: 0
+  gameData: {fileID: 11400000, guid: 134e8cda908000d4186b7e58f08f068b, type: 2}
 --- !u!4 &1695727015
 Transform:
   m_ObjectHideFlags: 0
