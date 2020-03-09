@@ -90,8 +90,6 @@ class DisplayAvailableMatches : MonoBehaviour
 	private void ButtonAction( int buttonId )
 	{
 
-		print( "------------------------------------- " + buttonId );
-
 		int matchId = ( maxButtons - 1 ) - buttonId;
 
 		if ( matchId < matchNames.Length )
@@ -120,6 +118,15 @@ class DisplayAvailableMatches : MonoBehaviour
 	private void SetButtonText( int buttonId, string text )
 	{
 		buttons[ buttonId ].GetComponentInChildren<TMPro.TextMeshProUGUI>().SetText( text );
+
+	}
+
+	public void JoinSellectedGame()
+	{
+		if ( selectedMatchId < 0 || selectedMatchId >- matchNames.Length ) return;
+
+		JoinGameProtocol joinGame = new JoinGameProtocol();
+		joinGame.match_name = matchNames[ selectedMatchId ];
 
 	}
 
