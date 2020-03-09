@@ -121,7 +121,7 @@ class DisplayAvailableMatches : MonoBehaviour
 
 	}
 
-	public void JoinSellectedGame()
+	public void JoinSelectedGame()
 	{
 		if ( selectedMatchId < 0 || selectedMatchId >- matchNames.Length ) return;
 
