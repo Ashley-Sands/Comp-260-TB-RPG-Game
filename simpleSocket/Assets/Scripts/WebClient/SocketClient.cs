@@ -17,18 +17,9 @@ public class SocketClient : MonoBehaviour
     private const int   MESSAGE_MAX_LENGTH          = 1024;
     private const bool  LITTLE_BYTE_ORDER           = false;
 
-    private static SocketClient activeSocket = null;
-    public static SocketClient ActiveSocket { 
-        get {
-                if ( activeSocket == null )
-                    activeSocket = new SocketClient();
+	public static SocketClient ActiveSocket { get; private set; }
 
-                return activeSocket;
-        }
-    
-    } 
-
-	private ASCIIEncoding encoder = new ASCIIEncoding();
+    private ASCIIEncoding encoder = new ASCIIEncoding();
 
     private Socket socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
 
@@ -177,7 +168,7 @@ public class SocketClient : MonoBehaviour
 
     private void Awake ()
     {
-        activeSocket = this;
+        ActiveSocket = this;
         DontDestroyOnLoad( this );
     }
     private void Start()
@@ -192,6 +183,14 @@ public class SocketClient : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        // always process the inbound queue, as the game can inject protocols,
+        // as a means of notifcation, ie when the connection is lost.
+        while ( inboundQueue.Count > 0 )
+        {
+            BaseProtocol protocol = inboundQueue.Dequeue() as BaseProtocol;
+            HandleProtocol.Inst.InvokeProtocol( protocol );
+        }
 
         if ( !Running ) return;
 
@@ -225,12 +224,6 @@ public class SocketClient : MonoBehaviour
                 sendThread.Start();
             }
 
-            // process the inbound queue
-            while ( inboundQueue.Count > 0 )
-            {
-                BaseProtocol protocol = inboundQueue.Dequeue() as BaseProtocol;
-                HandleProtocol.Inst.InvokeProtocol( protocol );
-            }
         }
     }
 
@@ -412,7 +405,9 @@ public class SocketClient : MonoBehaviour
         // to let the game know that an error has occored.
         ServerStatusProtocol serverStatus = new ServerStatusProtocol();
         serverStatus.ok = false;
-        serverStatus.from_client = "GAME";
+        serverStatus.from_client = GameData.GAME_CLIENT_NAME;
+
+        inboundQueue.Enqueue( serverStatus );
 
         ResetSocket();
 
@@ -439,7 +434,11 @@ public class SocketClient : MonoBehaviour
     {
         Running = false;
         Connected = false;
-        Connecting = false;
+
+        OnDestroy();    // make sure all the threads have stoped
+
+        socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
+
     }
 
     private void OnDestroy ()
