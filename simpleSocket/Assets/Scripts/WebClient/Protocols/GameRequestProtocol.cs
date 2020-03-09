@@ -13,4 +13,41 @@ namespace Protocol
         public string[] available_slots;
         
     }
+
+    public class JoinGameProtocol : BaseProtocol
+    {
+
+        public override char Identity => 'j';
+        public override string Name => "Join Match";
+
+        public string match_name = "";
+
+    }
+
+    public class LeaveGameProtocol : BaseProtocol
+    {
+        public override char Identity => 'l';
+        public override string Name => "Leave Match";
+
+    }
+
+    public class GameStatusProtocol : BaseProtocol
+    {
+
+        public override char Identity => 'G';
+        public override string Name => "Match Status";
+
+        public bool ok;
+        public string message;
+
+    }
+
+    public class GameDataProtocol : BaseProtocol
+    {
+        public override char Identity => 'd';
+        public override string Name => "Match Data";
+
+        public string[] players;
+
+    }
 }

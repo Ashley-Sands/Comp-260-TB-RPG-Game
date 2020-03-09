@@ -43,7 +43,11 @@ namespace Protocol
                 { 's', new ProtocolEvent() },   // client status
                 { 'S', new ProtocolEvent() },   // server status
                 { 'i', new ProtocolEvent() },   // client identity
-                { 'g', new ProtocolEvent() }    // game request
+                { 'g', new ProtocolEvent() },   // game request
+                { 'j', new ProtocolEvent() },   // join game request
+                { 'l', new ProtocolEvent() },   // leave game
+                { 'G', new ProtocolEvent() },   // game status
+                { 'd', new ProtocolEvent() }    // game data
                 // Dont forget to add it to Convert json as well :)
             };
 
@@ -109,14 +113,26 @@ namespace Protocol
                 case 's':   // client status
                     newProto = JsonUtility.FromJson<ClientStatusProtocol>( json );
                     break;
-                case 'S':   // client status
+                case 'S':   // server status
                     newProto = JsonUtility.FromJson<ServerStatusProtocol>( json );
                     break;
-                case 'i':   // client status
+                case 'i':   // client idenity
                     newProto = JsonUtility.FromJson<ClientIdentity>( json );
                     break;
-                case 'g':   // client status
+                case 'g':   // game request
                     newProto = JsonUtility.FromJson<GameRequestProtocol>( json );
+                    break;
+                case 'j':   // joint game
+                    newProto = JsonUtility.FromJson<JoinGameProtocol>( json );
+                    break;
+                case 'l':   // leave game
+                    newProto = JsonUtility.FromJson<LeaveGameProtocol>( json );
+                    break;
+                case 'G':   // game status
+                    newProto = JsonUtility.FromJson<GameStatusProtocol>( json );
+                    break;
+                case 'd':   // game data
+                    newProto = JsonUtility.FromJson<GameDataProtocol>( json );
                     break;
                 default:    // Not found
                     Debug.LogErrorFormat( "Unable to handle json, Failed to identify protocol {0}", idenity );
