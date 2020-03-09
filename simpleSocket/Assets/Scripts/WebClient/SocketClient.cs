@@ -35,12 +35,28 @@ public class SocketClient : MonoBehaviour
     private readonly string hostIp = "127.0.0.1";
     private readonly int port = 8222;
 
-    public bool running = false;    // need to add this to the threads.
-    private bool connecting = false;
-    private bool connected = false;
+    public bool _running = false;    // need to add this to the threads.
+    private bool _connecting = false;
+    private bool _connected = false;
+
+    private float _reconnectCooldown = 0;
 
     public GameData gameData;
 
+    private bool Running {
+        get{
+            lock (this)
+            {
+                return _running;
+            }
+        }
+        set {
+            lock (this)
+            {
+                _running = value;
+            }
+        }
+    }
     /// <summary>
     /// Thread safe method to see if we are attempting to connect
     /// </summary>
@@ -48,14 +64,14 @@ public class SocketClient : MonoBehaviour
         get {
             lock ( this )
             {
-                return connecting;
+                return _connecting;
             }
         }
 
         set {
             lock ( this )
             {
-                connecting = value;
+                _connecting = value;
             }
         }
     }
@@ -67,18 +83,37 @@ public class SocketClient : MonoBehaviour
         get {
             lock ( this )
             {
-                return connected;
+                return _connected;
             }
         }
 
         set {
             lock ( this )
             {
-                connected = value;
+                _connected = value;
             }
         }
     }
 
+    /// <summary>
+    /// Thread safe method to set and check reconnect cool down
+    /// </summary>
+    public float ReconnectCooldown{
+
+        get{
+            lock (this)
+            {
+                return _reconnectCooldown;
+            }
+        }
+        set{
+            lock (this)
+            {
+                _reconnectCooldown = value;
+            }
+        }
+
+    }
 
     private Thread connectThread;
     private Thread receiveThread;
@@ -158,10 +193,13 @@ public class SocketClient : MonoBehaviour
     void Update()
     {
 
-        if ( !running ) return;
+        if ( !Running ) return;
+
+        if (ReconnectCooldown > 0)
+            ReconnectCooldown -= Time.deltaTime;
 
         // check that the required threads are running
-        if ( !Connecting && !Connected )  // connect
+        if ( ReconnectCooldown > 0 && !Connecting && !Connected )  // connect
         {
             gameData.SetStatus( ConnectionStatus.Connecting );
 
@@ -169,7 +207,7 @@ public class SocketClient : MonoBehaviour
             connectThread = new Thread( Connect );
             connectThread.Start();
         }
-        else if ( connected )
+        else if ( Connected )
         {
             gameData.SetStatus( ConnectionStatus.Connected );
 
@@ -217,6 +255,8 @@ public class SocketClient : MonoBehaviour
             catch (System.Exception e)
             {
                 Debug.LogError( e );
+                ReconnectCooldown = 30;
+                break;
             }
         }
 
@@ -235,8 +275,18 @@ public class SocketClient : MonoBehaviour
             // recive first bytes to see how long the message is
             socket.Receive( mesLenBuffer, 0, MESSAGE_LEN_PACKAGE_SIZE, SocketFlags.None );
             Debug.Log( "Bytes" );
-            // Get the next byte to see what data the message contatines
-            socket.Receive( mesTypeBuffer, 0, MESSAGE_TYPE_PACKAGE_SIZE, SocketFlags.None );
+
+            try
+            {
+                // Get the next byte to see what data the message contatines
+                socket.Receive( mesTypeBuffer, 0, MESSAGE_TYPE_PACKAGE_SIZE, SocketFlags.None );
+            }
+            catch( System.Exception e )
+            {
+                Debug.LogError( e );
+                Disconnect();
+                break;
+            }
 
             // make sure the received value is in the correct endian
             ConvertBytes( ref mesLenBuffer );
@@ -312,9 +362,18 @@ public class SocketClient : MonoBehaviour
             
             Debug.LogWarningFormat("Sending mesage Length: {0}; Idenity: {1}", messageLength, protocol.Identity);
 
-            socket.Send( dataLenBytes );                                    // send the length of the message
-            socket.Send( dataIdenityBytes );                                // send the idenity of the message
-            socket.Send( encoder.GetBytes( data ) );                        // send the message
+            try
+            {
+                socket.Send( dataLenBytes );                                    // send the length of the message
+                socket.Send( dataIdenityBytes );                                // send the idenity of the message
+                socket.Send( encoder.GetBytes( data ) );                        // send the message
+            }
+            catch(System.Exception e)
+            {
+                Debug.LogError( e );
+                Disconnect();
+                break;
+            }
 
         }
       
@@ -339,6 +398,27 @@ public class SocketClient : MonoBehaviour
 
     }
 
+    private void ErrorDisconnect()
+    {
+        
+        // make sure the socket is dead.
+        try
+        {
+            socket.Close();
+        }
+        catch{}
+
+        // Add a server error to the inbound cue.
+        // to let the game know that an error has occored.
+        ServerStatusProtocol serverStatus = new ServerStatusProtocol();
+        serverStatus.ok = false;
+        serverStatus.from_client = "GAME";
+
+        ResetSocket();
+
+
+    }
+
     private void Disconnect ()
     {
 
@@ -353,6 +433,13 @@ public class SocketClient : MonoBehaviour
             socket.Close();
         }
 
+    }
+
+    private void ResetSocket()
+    {
+        Running = false;
+        Connected = false;
+        Connecting = false;
     }
 
     private void OnDestroy ()
