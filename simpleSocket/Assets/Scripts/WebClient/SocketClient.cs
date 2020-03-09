@@ -171,7 +171,7 @@ public class SocketClient : MonoBehaviour
         }
         else if ( connected )
         {
-            print( ConnectionStatus.Connected );
+            gameData.SetStatus( ConnectionStatus.Connected );
 
             if ( !ReciveThread_isRunning )
             {
@@ -212,7 +212,6 @@ public class SocketClient : MonoBehaviour
                 socket.Connect( new IPEndPoint( IPAddress.Parse( hostIp ), port ) );
                 Connected = socket.Connected;
                 Connecting = !Connected;
-                gameData.SetStatus( Connected ? ConnectionStatus.Connected : ConnectionStatus.Connecting );
 
             }
             catch (System.Exception e)
