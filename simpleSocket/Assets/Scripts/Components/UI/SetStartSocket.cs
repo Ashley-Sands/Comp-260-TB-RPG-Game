@@ -6,6 +6,6 @@ public class SetStartSocket : MonoBehaviour
 {
     public void ConnectSocket()
     {
-        SocketClient.ActiveSocket.running = true;
+        SocketClient.ActiveSocket.Running = true;
     }
 }

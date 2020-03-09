@@ -35,7 +35,7 @@ public class SocketClient : MonoBehaviour
     private readonly string hostIp = "127.0.0.1";
     private readonly int port = 8222;
 
-    public bool _running = false;    // need to add this to the threads.
+    private bool _running = false;    // need to add this to the threads.
     private bool _connecting = false;
     private bool _connected = false;
 
@@ -43,7 +43,7 @@ public class SocketClient : MonoBehaviour
 
     public GameData gameData;
 
-    private bool Running {
+    public bool Running {
         get{
             lock (this)
             {
