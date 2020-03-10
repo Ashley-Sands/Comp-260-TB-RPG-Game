@@ -72,7 +72,7 @@ public class GameData : ScriptableObject
     private void OnDisable ()
     {
         Protocol.HandleProtocol.Inst.Unbind( 'i', ReciveClientIdentityRequest );
-        Protocol.HandleProtocol.Inst.Unbind( 'S', ReceiveServerStatus );
+        Protocol.HandleProtocol.Inst.Unbind( 's', ReceiveServerStatus );
 
     }
 

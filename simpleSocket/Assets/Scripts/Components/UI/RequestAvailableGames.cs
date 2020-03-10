@@ -8,7 +8,7 @@ public class RequestAvailableGames : MonoBehaviour
 
     private void Awake ()
     {
-        HandleProtocol.Inst.Bind( 'S', GetAvailableGames );
+        HandleProtocol.Inst.Bind( 's', GetAvailableGames );
     }
 
     void GetAvailableGames( BaseProtocol protocol )
@@ -25,6 +25,6 @@ public class RequestAvailableGames : MonoBehaviour
 
     private void OnDestroy ()
     {
-        HandleProtocol.Inst.Unbind( 'S', GetAvailableGames );
+        HandleProtocol.Inst.Unbind( 's', GetAvailableGames );
     }
 }
