@@ -15,13 +15,13 @@ public class SetLobbyData : MonoBehaviour
 
     private void Awake ()
     {
-        Protocol.HandleProtocol.Inst.Bind( 'd', ReceiveGameInfo );
+        SocketClient.ActiveGameData.GameInfoUpdated += UpdateGameInfo;
 
-        ReceiveGameInfo( null );
+        UpdateGameInfo( );
 
     }
 
-    private void ReceiveGameInfo ( Protocol.BaseProtocol protocol)
+    private void UpdateGameInfo ( )
     {
 
         startsAt = SocketClient.ActiveGameData.gameStartsAt;
@@ -64,7 +64,8 @@ public class SetLobbyData : MonoBehaviour
 
     private void OnDestroy ()
     {
-        Protocol.HandleProtocol.Inst.Unbind( 'd', ReceiveGameInfo );
+        SocketClient.ActiveGameData.GameInfoUpdated -= UpdateGameInfo;
+
     }
 
 

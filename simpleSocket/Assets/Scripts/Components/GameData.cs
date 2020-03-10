@@ -17,12 +17,14 @@ public class GameData : ScriptableObject
     public delegate void gameStatusChanged ( GameStatus status );
     public event gameStatusChanged GameStatusChanged;
 
+    public event System.Action GameInfoUpdated;
+
     // Player Info
     public string nickname = "player";
 
     // Game Info
     public string gameName = "";
-    public string[] currentGamePlayers;
+    public List<string> currentGamePlayers = new List<string>();
     public int maxPlayers = 4;                  // 4 by default can vary 
     public float gameStartsAt = 0;
 
@@ -50,6 +52,7 @@ public class GameData : ScriptableObject
         Protocol.HandleProtocol.Inst.Bind( 'i', ReciveClientIdentityRequest );
         Protocol.HandleProtocol.Inst.Bind( 's', ReceiveServerStatus );
         Protocol.HandleProtocol.Inst.Bind( 'd', ReceiveGameInfo );
+        Protocol.HandleProtocol.Inst.Bind( 's', ReceiveOtherClientStatus );     // this is sent from the server when a client joins the game.
 
         inited = true;
 
@@ -67,14 +70,27 @@ public class GameData : ScriptableObject
 
     }
 
+    private void ReceiveOtherClientStatus ( Protocol.BaseProtocol protocol )
+    {
+
+        currentGamePlayers.Add( protocol.from_client );
+
+        GameInfoUpdated?.Invoke();
+
+    }
+
     private void ReceiveGameInfo( Protocol.BaseProtocol protocol )
     {
         Protocol.GameInfoProtocol gameInfo = protocol as Protocol.GameInfoProtocol;
 
         gameName = gameInfo.game_name;
-        currentGamePlayers = gameInfo.players;
         maxPlayers = gameInfo.max_players;
         gameStartsAt = Time.time + gameInfo.starts_in;
+        currentGamePlayers.Clear();
+        currentGamePlayers.AddRange( gameInfo.players );
+
+        GameInfoUpdated?.Invoke();
+
     }
 
     private void ReceiveServerStatus( Protocol.BaseProtocol protocol )
@@ -128,6 +144,7 @@ public class GameData : ScriptableObject
         Protocol.HandleProtocol.Inst.Unbind( 'i', ReciveClientIdentityRequest );
         Protocol.HandleProtocol.Inst.Unbind( 's', ReceiveServerStatus );
         Protocol.HandleProtocol.Inst.Unbind( 'd', ReceiveGameInfo );
+        Protocol.HandleProtocol.Inst.Unbind( 's', ReceiveOtherClientStatus );
 
     }
 
