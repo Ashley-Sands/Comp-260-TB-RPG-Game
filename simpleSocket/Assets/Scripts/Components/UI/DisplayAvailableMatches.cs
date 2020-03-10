@@ -41,8 +41,6 @@ class DisplayAvailableMatches : MonoBehaviour
 		{
 			Button butt = Instantiate<Button>( buttonPrefab, buttonHold );
 
-			print( i + " :: "+ buttonHold.rect.height + " :: " + buttonPosition.position );
-
 			butt.transform.localPosition = buttonPosition.position - new Vector2( 0, buttonSize.position.y);
 
 			buttonPosition.position += new Vector2( 0, buttonSize.position.y + buttonSize.size.y );
