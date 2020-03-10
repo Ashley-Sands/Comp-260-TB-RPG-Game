@@ -124,7 +124,7 @@ namespace Protocol
                     newProto = JsonUtility.FromJson<LeaveGameProtocol>( json );
                     break;
                 case 'd':   // game data
-                    newProto = JsonUtility.FromJson<InitialGameDataProtocol>( json );
+                    newProto = JsonUtility.FromJson<GameInfoProtocol>( json );
                     break;
                 default:    // Not found
                     Debug.LogErrorFormat( "Unable to handle json, Failed to identify protocol {0}", idenity );

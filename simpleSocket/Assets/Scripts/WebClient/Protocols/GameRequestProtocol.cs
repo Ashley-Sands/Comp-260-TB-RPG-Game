@@ -31,7 +31,7 @@ namespace Protocol
 
     }
 
-    public class InitialGameDataProtocol : BaseProtocol
+    public class GameInfoProtocol : BaseProtocol
     {
         public override char Identity => 'd';
         public override string Name => "Match Data";
