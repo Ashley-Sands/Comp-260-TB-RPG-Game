@@ -268,10 +268,8 @@ public class SocketClient : MonoBehaviour
 
         while ( ReciveThread_isRunning && Connected)
         {
-            Debug.Log( "RUNNING" );
             // recive first bytes to see how long the message is
             socket.Receive( mesLenBuffer, 0, MESSAGE_LEN_PACKAGE_SIZE, SocketFlags.None );
-            Debug.Log( "Bytes" );
 
             try
             {
@@ -296,8 +294,6 @@ public class SocketClient : MonoBehaviour
             int messageLen = System.BitConverter.ToInt32(mesLenBuffer, 0);
             char messageIdenity = System.BitConverter.ToChar( mesTypeBuffer, 0 );
 
-            Debug.Log( "Receiving message type: " + messageIdenity + "::" + mesLenBuffer.ToString() );
-
             if ( messageLen > MESSAGE_MAX_LENGTH )
             {
                 // TODO: send the message back to server so it can be loged as a fatal error
@@ -308,7 +304,7 @@ public class SocketClient : MonoBehaviour
 
             }
 
-            Debug.LogWarningFormat("Recived message Len {0}; Message Type {1}; ", messageLen, messageIdenity);
+            Debug.LogWarningFormat("Recived message Len {0}; Identity {1}; ", messageLen, messageIdenity);
 
             // receive the message
             int result = socket.Receive( mesBuffer, 0, messageLen, SocketFlags.None );
@@ -317,7 +313,7 @@ public class SocketClient : MonoBehaviour
             BaseProtocol protocol = HandleProtocol.ConvertJson( messageIdenity, message );
 
             inboundQueue.Enqueue( (object)protocol );
-            Debug.Log( message );
+            Debug.Log("Inbound Message: "+ message );
         }
 
         ReciveThread_isRunning = false;
@@ -358,6 +354,7 @@ public class SocketClient : MonoBehaviour
             }
             
             Debug.LogWarningFormat("Sending mesage Length: {0}; Idenity: {1}", messageLength, protocol.Identity);
+            Debug.Log( "Outbound Message: " + data );
 
             try
             {
