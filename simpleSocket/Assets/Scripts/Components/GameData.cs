@@ -7,7 +7,7 @@ public class GameData : ScriptableObject
 {
 
     public enum GameStatus { None, Joining, Active }
-    public const string GAME_CLIENT_NAME = "GAME";  // this is used as the 'from_client' (in BaseProtocol) when the game needs to add inbound messages to queue.
+    public const string GAME_CLIENT_NAME = "GAME";  // this is used as the 'from_client' (in BaseProtocol) when the game needs to inject inbound messages to queue.
 
     public delegate void connectionStatusChanged ( ConnectionStatus status );
     public event connectionStatusChanged ConnectionStatusChanged;
@@ -15,8 +15,15 @@ public class GameData : ScriptableObject
     public delegate void gameStatusChanged ( GameStatus status );
     public event gameStatusChanged GameStatusChanged;
 
+    // Player Info
     public string nickname = "player";
 
+    // Game Info
+    public string gameName = "";
+    public string currentGamePlayers = "";
+    public int maxPlayers = 4;                  // 4 by default can vary 
+
+    // Connection and game status
     private ConnectionStatus connStatus = ConnectionStatus.None;
     private GameStatus gameStatus = GameStatus.None;
 
