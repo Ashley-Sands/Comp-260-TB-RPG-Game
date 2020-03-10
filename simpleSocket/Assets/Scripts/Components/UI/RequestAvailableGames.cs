@@ -16,7 +16,7 @@ public class RequestAvailableGames : MonoBehaviour
 
         StatusProtocol serverStatus = protocol as StatusProtocol;
 
-        if ( serverStatus.IsType( StatusProtocol.Type.Server ) && !serverStatus.ok ) return; // oppsie we've been bad.... :(
+        if ( !serverStatus.IsType( StatusProtocol.Type.Server ) || !serverStatus.ok ) return; // oppsie we've been bad.... :(
 
         GameRequestProtocol gameRequest = new GameRequestProtocol();
         SocketClient.ActiveSocket.QueueMessage( gameRequest );
