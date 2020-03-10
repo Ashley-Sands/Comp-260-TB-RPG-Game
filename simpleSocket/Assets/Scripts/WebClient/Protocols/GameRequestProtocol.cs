@@ -31,12 +31,15 @@ namespace Protocol
 
     }
 
-    public class GameDataProtocol : BaseProtocol
+    public class InitialGameDataProtocol : BaseProtocol
     {
         public override char Identity => 'd';
         public override string Name => "Match Data";
 
+        public string game_name;
         public string[] players;
+        public int max_players;
+        public float starts_in;
 
     }
 }

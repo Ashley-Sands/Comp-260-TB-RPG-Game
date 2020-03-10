@@ -22,7 +22,7 @@ public class GameData : ScriptableObject
 
     // Game Info
     public string gameName = "";
-    public string currentGamePlayers = "";
+    public string[] currentGamePlayers;
     public int maxPlayers = 4;                  // 4 by default can vary 
 
     // Connection and game status
