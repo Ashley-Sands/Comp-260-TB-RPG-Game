@@ -4,45 +4,122 @@ using UnityEngine;
 
 public class ToggleStatus : MonoBehaviour
 {
-
-    [SerializeField] private GameObject connectingUI;
-    [SerializeField] private GameObject errorUI;
+    [SerializeField] private DelegateEvent_Bool statusChangedEvent; // this is invoked when even the message is updated.
     [SerializeField] private GameObject holdUI;
+    [SerializeField] private TMPro.TextMeshProUGUI messageUI;
 
-    [SerializeField] private GameData gameData;
+    private Dictionary<string, string> messages;
 
-    private void Awake()
+
+
+    private void Start()
     {
-
-        gameData.ConnectionStatusChanged += ConnectionStatusChanged;
+        messages = new Dictionary<string, string>();
+        SocketClient.ActiveGameData.ConnectionStatusChanged += ConnectionStatusChanged;
+        SocketClient.ActiveGameData.GameStatusChanged += GameStatusChanged;
 
     }
 
     private void ConnectionStatusChanged( ConnectionStatus status )
     {
 
-        if ( status == ConnectionStatus.Connecting )
-            ToggleUiComps( true, false );
-        else if ( status == ConnectionStatus.Error )
-            ToggleUiComps( false, true );
-        else
-            ToggleUiComps( false, false );
+        switch( status )
+        {
+            case ConnectionStatus.Connecting:
+                AddMessage( "Connecting", "..." );
+                break;
+            case ConnectionStatus.Error:
+                AddMessage( "Connection Error", "Please check your connection and try again" );
+                break;
+            default:
+                RemoveMessage( "Connecting", "ConnectionError" );
+                break;
+        }
 
     }
 
-    private void ToggleUiComps( bool showConnUI, bool showErrorUI )
+    private void GameStatusChanged( GameData.GameStatus status )
+    {
+        print( "???????????????????????????????Status Changed" );
+
+        switch ( status )
+        {
+            case GameData.GameStatus.Joining:
+                AddMessage( "Joining", "Please wait..." );
+                break;
+            default:
+                RemoveMessage( "Joining" );
+                break;
+        }
+
+    }
+
+    private void UpdateMessageUI( )
     {
 
-        holdUI.SetActive( showConnUI || showErrorUI );
+        bool hasMessageToDisplay = messages.Count > 0;
+        // Only show the message window if there is a message to be displayed.
+        holdUI.SetActive( hasMessageToDisplay );
+        statusChangedEvent.Invoke( hasMessageToDisplay );
 
-        connectingUI.SetActive( showConnUI );
-        errorUI.SetActive( showErrorUI );
+        if ( !hasMessageToDisplay ) return;
 
+        string msgToDisplay = "";
+
+        foreach (KeyValuePair<string, string> pair in messages)
+            msgToDisplay = string.Concat( msgToDisplay, pair.ToString(), "\n" );
+
+        messageUI.SetText( msgToDisplay );
+
+    }
+
+    public void AddMessage ( string typeName, string message, float displayLength = -1 )
+    {
+        if ( !messages.ContainsKey( typeName ) )
+        {
+            messages.Add( typeName, message );
+        }
+        else
+        {
+            messages[ typeName ] = message;
+        }
+
+        if ( displayLength > 0 )
+            StartCoroutine( RemoveMessageIn( typeName, displayLength) );
+
+        UpdateMessageUI();
+
+    }
+
+    IEnumerator RemoveMessageIn(string typeName, float delayLength)
+    {
+
+        yield return new WaitForSeconds(delayLength);
+
+        RemoveMessage( typeName );
+
+    }
+
+    public void RemoveMessage( params string[] typeName )
+    {
+        foreach (string t in typeName)
+            if ( messages.ContainsKey( t ) )
+                messages.Remove( t );
+
+        UpdateMessageUI();
+
+    }
+
+    public void ClearMessages()
+    {
+        messages.Clear();
     }
 
     private void OnDestroy()
     {
-        gameData.ConnectionStatusChanged -= ConnectionStatusChanged;
+        SocketClient.ActiveGameData.ConnectionStatusChanged -= ConnectionStatusChanged;
+        SocketClient.ActiveGameData.GameStatusChanged -= GameStatusChanged;
+
     }
 
 }
