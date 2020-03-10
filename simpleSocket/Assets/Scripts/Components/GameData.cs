@@ -24,6 +24,7 @@ public class GameData : ScriptableObject
     public string gameName = "";
     public string[] currentGamePlayers;
     public int maxPlayers = 4;                  // 4 by default can vary 
+    public float gameStartsAt = 0;
 
     // Connection and game status
     private ConnectionStatus connStatus = ConnectionStatus.None;
@@ -73,7 +74,7 @@ public class GameData : ScriptableObject
         gameName = gameInfo.game_name;
         currentGamePlayers = gameInfo.players;
         maxPlayers = gameInfo.max_players;
-
+        gameStartsAt = Time.time + gameInfo.starts_in;
     }
 
     private void ReceiveServerStatus( Protocol.BaseProtocol protocol )
