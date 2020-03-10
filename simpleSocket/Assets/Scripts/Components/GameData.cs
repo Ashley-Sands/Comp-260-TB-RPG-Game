@@ -6,6 +6,8 @@ using UnityEngine;
 public class GameData : ScriptableObject
 {
 
+    private bool inited = false;
+
     public enum GameStatus { None, Joining, Active }
     public const string GAME_CLIENT_NAME = "GAME";  // this is used as the 'from_client' (in BaseProtocol) when the game needs to inject inbound messages to queue.
 
@@ -35,13 +37,19 @@ public class GameData : ScriptableObject
     public bool JoingGame => gameStatus == GameStatus.Joining;
     public bool GameActive => gameStatus == GameStatus.Active;
 
-    private void OnEnable ()
+    //private void OnEnable ()
+    public void Init()
     {
+
+        if ( inited ) return;   // make sure that this doent happen twice
+
         connStatus = ConnectionStatus.None; // this is what i hate about scriptables ffs!
         gameStatus = GameStatus.None;
 
         Protocol.HandleProtocol.Inst.Bind( 'i', ReciveClientIdentityRequest );
         Protocol.HandleProtocol.Inst.Bind( 's', ReceiveServerStatus );
+
+        inited = true;
 
     }
 
@@ -103,7 +111,7 @@ public class GameData : ScriptableObject
 
     }
 
-    private void OnDisable ()
+    private void OnDestroy ()
     {
         Protocol.HandleProtocol.Inst.Unbind( 'i', ReciveClientIdentityRequest );
         Protocol.HandleProtocol.Inst.Unbind( 's', ReceiveServerStatus );

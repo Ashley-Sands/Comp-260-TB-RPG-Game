@@ -7,12 +7,10 @@ public class SetActiveOnConnectionStatusChange : MonoBehaviour
     [SerializeField] private GameObject obj;
     [SerializeField] private ConnectionStatus activeStatus = ConnectionStatus.Connected;
 
-    [SerializeField] private GameData gameData;
-
     private void Awake ()
     {
 
-        gameData.ConnectionStatusChanged += ConnectionStatusChanged;
+        SocketClient.ActiveGameData.ConnectionStatusChanged += ConnectionStatusChanged;
 
     }
 
@@ -28,6 +26,6 @@ public class SetActiveOnConnectionStatusChange : MonoBehaviour
 
     private void OnDestroy ()
     {
-        gameData.ConnectionStatusChanged -= ConnectionStatusChanged;
+        SocketClient.ActiveGameData.ConnectionStatusChanged -= ConnectionStatusChanged;
     }
 }

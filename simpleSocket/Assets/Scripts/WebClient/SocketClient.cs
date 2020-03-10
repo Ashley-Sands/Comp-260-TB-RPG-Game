@@ -173,6 +173,7 @@ public class SocketClient : MonoBehaviour
     {
         ActiveSocket = this;
         ActiveGameData = Instantiate<GameData>( gameData );
+        ActiveGameData.Init();
 
         DontDestroyOnLoad( this );
     }
@@ -205,7 +206,7 @@ public class SocketClient : MonoBehaviour
         // check that the required threads are running
         if ( ReconnectCooldown <= 0 && !Connecting && !Connected )  // connect
         {
-            gameData.SetConnectionStatus( ConnectionStatus.Connecting );
+            ActiveGameData.SetConnectionStatus( ConnectionStatus.Connecting );
 
             Connecting = true;
             connectThread = new Thread( Connect );
@@ -213,7 +214,7 @@ public class SocketClient : MonoBehaviour
         }
         else if ( Connected )
         {
-            gameData.SetConnectionStatus( ConnectionStatus.Connected );
+            ActiveGameData.SetConnectionStatus( ConnectionStatus.Connected );
 
             if ( !ReciveThread_isRunning )
             {
@@ -302,7 +303,7 @@ public class SocketClient : MonoBehaviour
                 // Or should i just realocate?
                 Debug.LogErrorFormat("FATAL ERROR: Message has exceded the max message size. The message has been loged, and discarded as a result! (Max message size: {0} Received message size: {1})", 
                                       MESSAGE_MAX_LENGTH, messageLen);
-                continue;
+                //continue;
 
             }
 
