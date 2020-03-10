@@ -9,7 +9,7 @@ public static class Helpers
 	{
 		System.TimeSpan time = new System.TimeSpan(0, 0, seconds);
 
-		return time.ToString();// string.Format(  )
+		return time.ToString();
 
 	}
 
