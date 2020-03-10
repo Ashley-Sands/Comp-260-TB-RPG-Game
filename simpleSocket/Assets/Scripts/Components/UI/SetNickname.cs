@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class SetNickname : MonoBehaviour
 {
-    [SerializeField] private GameData gameData;
     [SerializeField] private TMPro.TMP_InputField nicknameInput;
 
     public void SetPlayerNickname ()
     {
-        gameData.nickname = nicknameInput.text;
+        SocketClient.ActiveGameData.nickname = nicknameInput.text;
     }
 }

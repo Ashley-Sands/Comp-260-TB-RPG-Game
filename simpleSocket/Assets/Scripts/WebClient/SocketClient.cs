@@ -20,7 +20,7 @@ public class SocketClient : MonoBehaviour
     [SerializeField] private GameData gameData;
 
     public static SocketClient ActiveSocket { get; private set; }
-    public static GameData ActiveGameData => ActiveSocket.gameData;
+    public static GameData ActiveGameData { get; private set; }
 
 
     private ASCIIEncoding encoder = new ASCIIEncoding();
@@ -172,6 +172,8 @@ public class SocketClient : MonoBehaviour
     private void Awake ()
     {
         ActiveSocket = this;
+        ActiveGameData = Instantiate<GameData>( gameData );
+
         DontDestroyOnLoad( this );
     }
     private void Start()
