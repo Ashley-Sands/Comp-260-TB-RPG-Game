@@ -25,9 +25,10 @@ public class Test_Receive : MonoBehaviour
 
 	private void ReceiveClientStatus( BaseProtocol protocol )
 	{
-		ClientStatusProtocol clientStatus = protocol as ClientStatusProtocol;
+		StatusProtocol clientStatus = protocol as StatusProtocol;
 
-		PrintToConsole( string.Format( "{0} has {1} the server", clientStatus.from_client, ( clientStatus.connected ? "connected to" : "disconnected from" ) ) );
+		if (clientStatus.IsType( StatusProtocol.Type.Client ))
+			PrintToConsole( string.Format( "{0} has {1} the server", clientStatus.from_client, ( clientStatus.ok ? "connected to" : "disconnected from" ) ) );
 
 	}
 

@@ -31,17 +31,6 @@ namespace Protocol
 
     }
 
-    public class GameStatusProtocol : BaseProtocol
-    {
-
-        public override char Identity => 'G';
-        public override string Name => "Match Status";
-
-        public bool ok;
-        public string message;
-
-    }
-
     public class GameDataProtocol : BaseProtocol
     {
         public override char Identity => 'd';

@@ -40,13 +40,11 @@ namespace Protocol
             protocolEvents = new Dictionary<char, ProtocolEvent>
             {    
                 { 'm', new ProtocolEvent() },   // message
-                { 's', new ProtocolEvent() },   // client status
-                { 'S', new ProtocolEvent() },   // server status
+                { 's', new ProtocolEvent() },   // status
                 { 'i', new ProtocolEvent() },   // client identity
                 { 'g', new ProtocolEvent() },   // game request
                 { 'j', new ProtocolEvent() },   // join game request
                 { 'l', new ProtocolEvent() },   // leave game
-                { 'G', new ProtocolEvent() },   // game status
                 { 'd', new ProtocolEvent() }    // game data
                 // Dont forget to add it to Convert json as well :)
             };
@@ -111,10 +109,7 @@ namespace Protocol
                     newProto = JsonUtility.FromJson<MessageProtocol>( json );
                     break;
                 case 's':   // client status
-                    newProto = JsonUtility.FromJson<ClientStatusProtocol>( json );
-                    break;
-                case 'S':   // server status
-                    newProto = JsonUtility.FromJson<ServerStatusProtocol>( json );
+                    newProto = JsonUtility.FromJson<StatusProtocol>( json );
                     break;
                 case 'i':   // client idenity
                     newProto = JsonUtility.FromJson<ClientIdentity>( json );
@@ -127,9 +122,6 @@ namespace Protocol
                     break;
                 case 'l':   // leave game
                     newProto = JsonUtility.FromJson<LeaveGameProtocol>( json );
-                    break;
-                case 'G':   // game status
-                    newProto = JsonUtility.FromJson<GameStatusProtocol>( json );
                     break;
                 case 'd':   // game data
                     newProto = JsonUtility.FromJson<GameDataProtocol>( json );

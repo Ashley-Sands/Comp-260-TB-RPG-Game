@@ -13,22 +13,4 @@ namespace Protocol
 
     }
 
-    public class ClientStatusProtocol : BaseProtocol
-    {
-
-        public override char Identity => 's';
-        public override string Name => "clientStatus";
-
-        public bool connected = false;
-
-    }
-
-    public class ServerStatusProtocol : BaseProtocol
-    {
-        public override char Identity => 'S';
-        public override string Name => "serverStatus";
-
-        public bool ok = false;
-
-    }
 }

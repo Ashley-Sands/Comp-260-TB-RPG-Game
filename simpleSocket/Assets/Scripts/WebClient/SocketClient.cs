@@ -405,14 +405,14 @@ public class SocketClient : MonoBehaviour
 
         // Add a server error to the inbound cue.
         // to let the game know that an error has occored.
-        ServerStatusProtocol serverStatus = new ServerStatusProtocol();
+        StatusProtocol serverStatus = new StatusProtocol();
         serverStatus.ok = false;
+        serverStatus.SetMessageType( StatusProtocol.Type.Server );
         serverStatus.from_client = GameData.GAME_CLIENT_NAME;
 
         inboundQueue.Enqueue( serverStatus );
 
         ResetSocket();
-
 
     }
 

@@ -25,7 +25,7 @@ public class GameData : ScriptableObject
         connStatus = ConnectionStatus.None; // this is what i hate about scriptables ffs!
 
         Protocol.HandleProtocol.Inst.Bind( 'i', ReciveClientIdentityRequest );
-        Protocol.HandleProtocol.Inst.Bind( 'S', ReceiveServerStatus );
+        Protocol.HandleProtocol.Inst.Bind( 's', ReceiveServerStatus );
 
     }
 
@@ -44,9 +44,9 @@ public class GameData : ScriptableObject
     private void ReceiveServerStatus( Protocol.BaseProtocol protocol )
     {
 
-        Protocol.ServerStatusProtocol serverStatus = protocol as Protocol.ServerStatusProtocol;
+        Protocol.StatusProtocol serverStatus = protocol as Protocol.StatusProtocol;
 
-        if ( !serverStatus.ok )
+        if ( serverStatus.IsType( Protocol.StatusProtocol.Type.Server ) && !serverStatus.ok )
             SetStatus( ConnectionStatus.Error );
 
     }

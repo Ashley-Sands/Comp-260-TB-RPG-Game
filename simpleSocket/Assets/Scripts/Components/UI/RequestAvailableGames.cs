@@ -14,12 +14,11 @@ public class RequestAvailableGames : MonoBehaviour
     void GetAvailableGames( BaseProtocol protocol )
     {
 
-        ServerStatusProtocol serverStatus = protocol as ServerStatusProtocol;
+        StatusProtocol serverStatus = protocol as StatusProtocol;
 
-        if ( !serverStatus.ok ) return; // oppsie we've been bad.... :(
+        if ( serverStatus.IsType( StatusProtocol.Type.Server ) && !serverStatus.ok ) return; // oppsie we've been bad.... :(
 
         GameRequestProtocol gameRequest = new GameRequestProtocol();
-
         SocketClient.ActiveSocket.QueueMessage( gameRequest );
 
     }
