@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ToggleConnectionStatus : MonoBehaviour
+public class ToggleStatus : MonoBehaviour
 {
 
     [SerializeField] private GameObject connectingUI;
