@@ -31,6 +31,7 @@ public class GameData : ScriptableObject
     private void OnEnable ()
     {
         connStatus = ConnectionStatus.None; // this is what i hate about scriptables ffs!
+        gameStatus = GameStatus.None;
 
         Protocol.HandleProtocol.Inst.Bind( 'i', ReciveClientIdentityRequest );
         Protocol.HandleProtocol.Inst.Bind( 's', ReceiveServerStatus );
