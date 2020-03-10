@@ -9,7 +9,7 @@ namespace Protocol
         public override char Identity => 'b';
         public override string Name => "Start Match";
 
-        int player_id;
+        public int player_id;
 
     }
 

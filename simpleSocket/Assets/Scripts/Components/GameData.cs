@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [CreateAssetMenu( fileName = "GameData", menuName = "GameData" )]
 public class GameData : ScriptableObject
@@ -21,6 +22,7 @@ public class GameData : ScriptableObject
 
     // Player Info
     public string nickname = "player";
+    public int playerID = 0;            // the Id of the play when in game. this is assigned when the game is launched
 
     // Game Info
     public string gameName = "";
@@ -53,6 +55,7 @@ public class GameData : ScriptableObject
         Protocol.HandleProtocol.Inst.Bind( 's', ReceiveServerStatus );
         Protocol.HandleProtocol.Inst.Bind( 'd', ReceiveGameInfo );
         Protocol.HandleProtocol.Inst.Bind( 's', ReceiveOtherClientStatus );     // this is sent from the server when a client joins the game.
+        Protocol.HandleProtocol.Inst.Bind( 'b', LaunchGame );                   // TODO: this is not the ideal place for this but hey. i need to make a level manager :|
 
         inited = true;
 
@@ -90,6 +93,16 @@ public class GameData : ScriptableObject
         currentGamePlayers.AddRange( gameInfo.players );
 
         GameInfoUpdated?.Invoke();
+
+    }
+
+    private void LaunchGame( Protocol.BaseProtocol protocol )
+    {
+        Protocol.LaunchGameProtocol lGame = protocol as Protocol.LaunchGameProtocol;
+
+        playerID = lGame.player_id;
+
+        SceneManager.LoadScene( "SampleScene", LoadSceneMode.Single );
 
     }
 
