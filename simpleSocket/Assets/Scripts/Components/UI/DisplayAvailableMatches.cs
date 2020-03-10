@@ -123,7 +123,7 @@ class DisplayAvailableMatches : MonoBehaviour
 
 	public void JoinSelectedGame()
 	{
-		if ( selectedMatchId < 0 || selectedMatchId > -matchNames.Length )
+		if ( selectedMatchId < 0 || selectedMatchId > matchNames.Length )
 		{
 			Debug.LogError( "Nothing is selected" );
 			return;
