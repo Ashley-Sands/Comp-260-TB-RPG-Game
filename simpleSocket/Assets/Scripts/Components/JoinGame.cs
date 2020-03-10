@@ -20,7 +20,7 @@ public class JoinGame : MonoBehaviour
         if ( status.IsType(StatusProtocol.Type.Game) && status.ok)
         {
             SceneManager.LoadScene( "GameLobby", LoadSceneMode.Single );
-            SocketClient.ActiveGameData.SetGameStatus( GameData.GameStatus.Active ); 
+            SocketClient.ActiveGameData.SetGameStatus( GameData.GameStatus.Active );
         }
 
     }

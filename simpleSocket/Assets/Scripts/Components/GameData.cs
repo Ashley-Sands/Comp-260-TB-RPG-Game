@@ -48,6 +48,7 @@ public class GameData : ScriptableObject
 
         Protocol.HandleProtocol.Inst.Bind( 'i', ReciveClientIdentityRequest );
         Protocol.HandleProtocol.Inst.Bind( 's', ReceiveServerStatus );
+        Protocol.HandleProtocol.Inst.Bind( 'd', ReceiveGameInfo );
 
         inited = true;
 
@@ -62,6 +63,16 @@ public class GameData : ScriptableObject
         clientIdentity.nickname = nickname;
 
         SocketClient.ActiveSocket.QueueMessage( clientIdentity as object );
+
+    }
+
+    private void ReceiveGameInfo( Protocol.BaseProtocol protocol )
+    {
+        Protocol.GameInfoProtocol gameInfo = protocol as Protocol.GameInfoProtocol;
+
+        gameName = gameInfo.game_name;
+        currentGamePlayers = gameInfo.players;
+        maxPlayers = gameInfo.max_players;
 
     }
 
@@ -115,6 +126,7 @@ public class GameData : ScriptableObject
     {
         Protocol.HandleProtocol.Inst.Unbind( 'i', ReciveClientIdentityRequest );
         Protocol.HandleProtocol.Inst.Unbind( 's', ReceiveServerStatus );
+        Protocol.HandleProtocol.Inst.Unbind( 'd', ReceiveGameInfo );
 
     }
 
