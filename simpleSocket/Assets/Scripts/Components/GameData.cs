@@ -6,20 +6,28 @@ using UnityEngine;
 public class GameData : ScriptableObject
 {
 
+    public enum GameStatus { None, Joining, Active }
     public const string GAME_CLIENT_NAME = "GAME";  // this is used as the 'from_client' (in BaseProtocol) when the game needs to add inbound messages to queue.
 
     public delegate void connectionStatusChanged ( ConnectionStatus status );
-    public event connectionStatusChanged ConnectionStatusChanged;           
+    public event connectionStatusChanged ConnectionStatusChanged;
+
+    public delegate void gameStatusChanged ( GameStatus status );
+    public event gameStatusChanged GameStatusChanged;
 
     public string nickname = "player";
 
     private ConnectionStatus connStatus = ConnectionStatus.None;
+    private GameStatus gameStatus = GameStatus.None;
+
 
     public bool Connecting => connStatus == ConnectionStatus.Connecting;
     public bool Connected => connStatus == ConnectionStatus.Connected;
     public bool ConnectionError => connStatus == ConnectionStatus.Error;
 
-    
+    public bool JoingGame => gameStatus == GameStatus.Joining;
+    public bool GameActive => gameStatus == GameStatus.Active;
+
     private void OnEnable ()
     {
         connStatus = ConnectionStatus.None; // this is what i hate about scriptables ffs!
@@ -47,26 +55,44 @@ public class GameData : ScriptableObject
         Protocol.StatusProtocol serverStatus = protocol as Protocol.StatusProtocol;
 
         if ( serverStatus.IsType( Protocol.StatusProtocol.Type.Server ) && !serverStatus.ok )
-            SetStatus( ConnectionStatus.Error );
+            SetConnectionStatus( ConnectionStatus.Error );
 
     }
 
-    public void SetStatus( ConnectionStatus status )
+    public void SetConnectionStatus( ConnectionStatus status )
     {
         if (status != connStatus && connStatus != ConnectionStatus.Error)
         {
-            Debug.Log( "Set status " + status );
+            Debug.Log( "Set connection status " + status );
 
             ConnectionStatusChanged?.Invoke( status );
             connStatus = status;
 
         }
+
+        // TODO: reset game status??
+
+    }
+
+    public void SetGameStatus( GameStatus status )
+    {
+        
+        if (status != gameStatus)
+        {
+            Debug.Log( "Set game status " + status );
+            gameStatus = status;
+            GameStatusChanged?.Invoke( status );
+        }
+
     }
 
     public void ResetConnectionStatus()
     {
         connStatus = ConnectionStatus.None;
         ConnectionStatusChanged?.Invoke( connStatus = ConnectionStatus.None );
+
+        // TODO: reset game status with connection??
+
     }
 
     private void OnDisable ()

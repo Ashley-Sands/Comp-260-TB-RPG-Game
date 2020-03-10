@@ -17,7 +17,11 @@ public class SocketClient : MonoBehaviour
     private const int   MESSAGE_MAX_LENGTH          = 1024;
     private const bool  LITTLE_BYTE_ORDER           = false;
 
-	public static SocketClient ActiveSocket { get; private set; }
+    [SerializeField] private GameData gameData;
+
+    public static SocketClient ActiveSocket { get; private set; }
+    public static GameData ActiveGameData => ActiveSocket.gameData;
+
 
     private ASCIIEncoding encoder = new ASCIIEncoding();
 
@@ -32,8 +36,6 @@ public class SocketClient : MonoBehaviour
 
     public float connectingCooldown;
     private float _reconnectCooldown = 0;
-
-    public GameData gameData;
 
     public bool Running {
         get{
@@ -201,7 +203,7 @@ public class SocketClient : MonoBehaviour
         // check that the required threads are running
         if ( ReconnectCooldown <= 0 && !Connecting && !Connected )  // connect
         {
-            gameData.SetStatus( ConnectionStatus.Connecting );
+            gameData.SetConnectionStatus( ConnectionStatus.Connecting );
 
             Connecting = true;
             connectThread = new Thread( Connect );
@@ -209,7 +211,7 @@ public class SocketClient : MonoBehaviour
         }
         else if ( Connected )
         {
-            gameData.SetStatus( ConnectionStatus.Connected );
+            gameData.SetConnectionStatus( ConnectionStatus.Connected );
 
             if ( !ReciveThread_isRunning )
             {

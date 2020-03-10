@@ -132,6 +132,7 @@ class DisplayAvailableMatches : MonoBehaviour
 		JoinGameProtocol joinGame = new JoinGameProtocol();
 		joinGame.match_name = matchNames[ selectedMatchId ];
 
+		SocketClient.ActiveGameData.SetGameStatus( GameData.GameStatus.Joining );
 		SocketClient.ActiveSocket.QueueMessage( joinGame );
 
 	}
