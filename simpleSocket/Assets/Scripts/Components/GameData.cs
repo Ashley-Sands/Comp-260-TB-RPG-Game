@@ -76,7 +76,7 @@ public class GameData : ScriptableObject
 
         clientIdentity.nickname = nickname;
 
-        SocketClient.ActiveSocket.QueueMessage( clientIdentity as object );
+        SocketClient.ActiveSocket.QueueMessage( clientIdentity );
 
     }
 

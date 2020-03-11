@@ -13,7 +13,7 @@ public class Test_sendMessage : MonoBehaviour
 
 		Protocol.MessageProtocol message = new Protocol.MessageProtocol( textInput.text );
 
-		SocketClient.ActiveSocket.QueueMessage( message as object );
+		SocketClient.ActiveSocket.QueueMessage( message );
 
 		textInput.text = "";
 

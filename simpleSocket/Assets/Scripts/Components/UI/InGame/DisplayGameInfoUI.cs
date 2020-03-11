@@ -11,7 +11,7 @@ public class DisplayGameInfoUI : MonoBehaviour
 
     private GameData gameData;
 
-    private void Awake ()
+    private void Start ()
     {
         gameData = SocketClient.ActiveGameData;
 
