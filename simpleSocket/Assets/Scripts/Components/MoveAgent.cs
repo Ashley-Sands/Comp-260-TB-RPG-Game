@@ -5,6 +5,9 @@ using UnityEngine.AI;
 
 public class MoveAgent : MonoBehaviour
 {
+
+    private int playerId;
+
     NavMeshAgent myNavMeshAgent;
     public bool followMouse = false;
     Vector3 loc;
