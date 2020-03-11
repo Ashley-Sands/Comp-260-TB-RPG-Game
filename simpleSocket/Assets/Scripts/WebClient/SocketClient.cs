@@ -248,7 +248,7 @@ public class SocketClient : MonoBehaviour
     /// <param name="message"></param>
     public void QueueLocalMessage( BaseProtocol message )
     {
-        outboundQueue.Enqueue( message );
+        inboundQueue.Enqueue( message );
     }
 
     private void Connect()
@@ -328,7 +328,7 @@ public class SocketClient : MonoBehaviour
 
             BaseProtocol protocol = HandleProtocol.ConvertJson( messageIdenity, message );
 
-            inboundQueue.Enqueue( (object)protocol );
+            inboundQueue.Enqueue( protocol );
             Debug.Log("Inbound Message: "+ message );
         }
 
