@@ -116,8 +116,8 @@ public class SocketClient : MonoBehaviour
     private bool _sendThread_isRunning = false;
     private bool _reciveThread_isRunning = false;
 
-    Queue inboundQueue;
-    Queue outboundQueue;
+    private Queue inboundQueue;
+    private Queue outboundQueue;
 
     /// <summary>
     /// Do we have any inbound messages waiting to be processed
@@ -233,7 +233,20 @@ public class SocketClient : MonoBehaviour
         }
     }
 
-    public void QueueMessage( object message )
+    /// <summary>
+    /// sends a message to server
+    /// </summary>
+    /// <param name="message"></param>
+    public void QueueMessage( BaseProtocol message )
+    {
+        outboundQueue.Enqueue( message );
+    }
+
+    /// <summary>
+    /// Sends a message to self
+    /// </summary>
+    /// <param name="message"></param>
+    public void QueueLocalMessage( BaseProtocol message )
     {
         outboundQueue.Enqueue( message );
     }
