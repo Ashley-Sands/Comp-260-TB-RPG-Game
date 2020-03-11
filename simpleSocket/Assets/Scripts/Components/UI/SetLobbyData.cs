@@ -58,7 +58,7 @@ public class SetLobbyData : MonoBehaviour
         GameData gameData = SocketClient.ActiveGameData;
 
         gameName.SetText( gameData.gameName );
-        clients.SetText( string.Join( "\n", gameData.currentGamePlayers ) );
+        clients.SetText( string.Join( "\n", gameData.currentLobbyClients ) );
 
     }
 

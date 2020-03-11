@@ -26,7 +26,7 @@ public class GameData : ScriptableObject
 
     // Game Server Info
     public string gameName = "";
-    public List<string> currentGamePlayers = new List<string>();
+    public List<string> currentLobbyClients = new List<string>();
     public int maxPlayers = 4;                  // 4 by default can vary 
     public float gameStartsAt = 0;
 
@@ -82,7 +82,7 @@ public class GameData : ScriptableObject
     private void ReceiveOtherClientStatus ( Protocol.BaseProtocol protocol )
     {
 
-        currentGamePlayers.Add( protocol.from_client );
+        currentLobbyClients.Add( protocol.from_client );
 
         GameInfoUpdated?.Invoke();
 
@@ -95,8 +95,8 @@ public class GameData : ScriptableObject
         gameName = gameInfo.game_name;
         maxPlayers = gameInfo.max_players;
         gameStartsAt = Time.time + gameInfo.starts_in;
-        currentGamePlayers.Clear();
-        currentGamePlayers.AddRange( gameInfo.players );
+        currentLobbyClients.Clear();
+        currentLobbyClients.AddRange( gameInfo.players );
 
         GameInfoUpdated?.Invoke();
 
