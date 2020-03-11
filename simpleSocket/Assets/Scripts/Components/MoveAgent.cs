@@ -15,6 +15,7 @@ public class MoveAgent : MonoBehaviour
     void Start ()
     {
         myNavMeshAgent = GetComponent<NavMeshAgent>();
+        Protocol.HandleProtocol.Inst.Bind( 'M', MovePlayer );
     }
 
     void Update ()
@@ -48,12 +49,32 @@ public class MoveAgent : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
         if ( Physics.Raycast( ray, out hit, 300, layerMask ) ) 
         {
-            myNavMeshAgent.SetDestination( hit.point );
+            Protocol.MovePlayerProtocols movePlayer = new Protocol.MovePlayerProtocols() 
+            { 
+                position = hit.point
+            };
+
+            SocketClient.ActiveSocket.QueueMessage( movePlayer );
+            MovePlayer( movePlayer );
         }
 
         loc = new Vector3((int)hit.point.x, hit.point.y, (int)hit.point.z );
 
         Debug.DrawRay( ray.origin, ray.direction * 500, Color.red );
+
+    }
+
+    private void MovePlayer( Protocol.BaseProtocol protocol)
+    {
+        Protocol.MovePlayerProtocols movePlayer = protocol as Protocol.MovePlayerProtocols;
+
+        myNavMeshAgent.SetDestination( movePlayer.position );
+
+    }
+
+    private void OnDestroy ()
+    {
+        Protocol.HandleProtocol.Inst.Unbind( 'M', MovePlayer );
 
     }
 }

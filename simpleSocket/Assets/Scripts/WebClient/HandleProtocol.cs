@@ -38,15 +38,19 @@ namespace Protocol
         private HandleProtocol ()
         {
             protocolEvents = new Dictionary<char, ProtocolEvent>
-            {    
+            {
+                // Genral Commands
                 { 'm', new ProtocolEvent() },   // message
                 { 's', new ProtocolEvent() },   // status
                 { 'i', new ProtocolEvent() },   // client identity
+                // Game Commands
                 { 'g', new ProtocolEvent() },   // game request
                 { 'j', new ProtocolEvent() },   // join game request
                 { 'l', new ProtocolEvent() },   // leave game
                 { 'd', new ProtocolEvent() },   // game data
-                { 'b', new ProtocolEvent() }    // launch game
+                { 'b', new ProtocolEvent() },   // launch game
+                // In Game Commands
+                { 'M', new ProtocolEvent() }    // move player
                 // Dont forget to add it to Convert json as well :)
             };
 
@@ -129,6 +133,9 @@ namespace Protocol
                     break;
                 case 'b':   // launch game
                     newProto = JsonUtility.FromJson<LaunchGameProtocol>( json );
+                    break;
+                case 'M':   // launch game
+                    newProto = JsonUtility.FromJson<MovePlayerProtocols>( json );
                     break;
                 default:    // Not found
                     Debug.LogErrorFormat( "Unable to handle json, Failed to identify protocol {0}", idenity );
