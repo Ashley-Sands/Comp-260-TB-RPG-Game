@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class MoveAgent : MonoBehaviour
 {
 
-    private int playerId;
+    public int PlayerId { get; set; }
 
     NavMeshAgent myNavMeshAgent;
     public bool followMouse = false;
