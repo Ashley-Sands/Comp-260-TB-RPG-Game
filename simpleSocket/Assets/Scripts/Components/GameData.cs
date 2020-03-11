@@ -24,11 +24,17 @@ public class GameData : ScriptableObject
     public string nickname = "player";
     public int playerID = 0;            // the Id of the play when in game. this is assigned when the game is launched
 
-    // Game Info
+    // Game Server Info
     public string gameName = "";
     public List<string> currentGamePlayers = new List<string>();
     public int maxPlayers = 4;                  // 4 by default can vary 
     public float gameStartsAt = 0;
+
+    // In Game info
+    public int currentPlayerID = 0;         // it would be better if the currentPlayers what a dict with playerId as the key and name as the value. \n
+    public string currentPlayerName = "";   // then we can just use the current player id :)
+
+
 
     // Connection and game status
     private ConnectionStatus connStatus = ConnectionStatus.None;
