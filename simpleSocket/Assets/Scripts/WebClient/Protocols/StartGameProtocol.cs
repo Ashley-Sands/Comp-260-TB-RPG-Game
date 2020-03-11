@@ -13,4 +13,14 @@ namespace Protocol
 
     }
 
+    public class JoinedGameProtocol : BaseProtocol
+    {
+        public override char Identity => 'J';
+        public override string Name => "JoinedGame";
+
+        public string player_name;
+        public int player_id;
+
+    }
+
 }

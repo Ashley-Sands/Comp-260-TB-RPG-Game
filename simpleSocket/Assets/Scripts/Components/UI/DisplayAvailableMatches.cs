@@ -127,7 +127,7 @@ class DisplayAvailableMatches : MonoBehaviour
 			return;
 		}
 
-		JoinGameProtocol joinGame = new JoinGameProtocol();
+		JoinLobbyProtocol joinGame = new JoinLobbyProtocol();
 		joinGame.match_name = matchNames[ selectedMatchId ];
 
 		SocketClient.ActiveGameData.SetGameStatus( GameData.GameStatus.Joining );

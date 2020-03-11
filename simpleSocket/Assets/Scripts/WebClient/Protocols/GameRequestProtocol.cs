@@ -14,7 +14,7 @@ namespace Protocol
         
     }
 
-    public class JoinGameProtocol : BaseProtocol
+    public class JoinLobbyProtocol : BaseProtocol   // See start game for joined game
     {
 
         public override char Identity => 'j';
@@ -24,13 +24,19 @@ namespace Protocol
 
     }
 
-    public class LeaveGameProtocol : BaseProtocol
+    /// <summary>
+    /// Leaves both game and lobby?
+    /// </summary>
+    public class LeaveGameProtocol : BaseProtocol   // TODO: implerment
     {
         public override char Identity => 'l';
         public override string Name => "Leave Match";
 
     }
 
+    /// <summary>
+    /// Basic game info
+    /// </summary>
     public class GameInfoProtocol : BaseProtocol
     {
         public override char Identity => 'd';

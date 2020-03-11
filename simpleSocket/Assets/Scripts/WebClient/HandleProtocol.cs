@@ -123,7 +123,7 @@ namespace Protocol
                     newProto = JsonUtility.FromJson<GameRequestProtocol>( json );
                     break;
                 case 'j':   // joint game
-                    newProto = JsonUtility.FromJson<JoinGameProtocol>( json );
+                    newProto = JsonUtility.FromJson<JoinLobbyProtocol>( json );
                     break;
                 case 'l':   // leave game
                     newProto = JsonUtility.FromJson<LeaveGameProtocol>( json );
