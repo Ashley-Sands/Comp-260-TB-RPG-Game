@@ -239,7 +239,8 @@ public class SocketClient : MonoBehaviour
     /// <param name="message"></param>
     public void QueueMessage( BaseProtocol message )
     {
-        outboundQueue.Enqueue( message );
+        if (Connected)
+            outboundQueue.Enqueue( message );
     }
 
     /// <summary>

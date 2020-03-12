@@ -5,6 +5,9 @@ using UnityEngine;
 namespace Protocol
 {
 
+    /// <summary>
+    /// Sent from server to client when player needs to change
+    /// </summary>
     public class ChangePlayerProtocol : BaseProtocol
     {
         public override char Identity => 'C';
