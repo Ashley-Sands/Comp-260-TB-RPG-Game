@@ -40,7 +40,7 @@ namespace Protocol
 
     /// <summary>
     /// Sent from client once all players (clients) have been loaded into the game
-    /// Sent from sever once it has received a copy from each client.
+    /// Sent from sever once it has received a copy from each client witk statis ok = true.
     /// then the game can start :)
     /// </summary>
     public class StartGameProtocol : BaseProtocol

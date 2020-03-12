@@ -27,16 +27,18 @@ public class SpwanPlayers : MonoBehaviour
 
 	}
 
-	private void PlayersJoined( Dictionary<int, string> players )
+	private void PlayersJoined ( Dictionary<int, string> players )
 	{
-		print(">>>>>>>>>>>>>helloo world####################################");
+		print( ">>>>>>>>>>>>>helloo world####################################" );
 		foreach ( KeyValuePair<int, string> kv in players )
 		{
-			if ( kv.Key != SocketClient.ActiveGameData.playerID )	// we have already added self!
+			if ( kv.Key != SocketClient.ActiveGameData.playerID )   // we have already added self!
 				SpwanPlayer( kv.Key );
 		}
 
 		// tell the server every thing is ok!
+		StartGameProtocol startGame = new StartGameProtocol() { ok = true };
+		SocketClient.ActiveSocket.QueueMessage( startGame );
 
 	}
 
