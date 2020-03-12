@@ -49,7 +49,7 @@ public class MoveAgent : MonoBehaviour
     void SetDestinationToMousePosition ()
     {
 
-        if ( !SocketClient.ActiveGameData.PlayerIsActive( PlayerId ) ) 
+        if ( !SocketClient.ActiveGameData.IsPlayerAndActive( PlayerId ) ) 
             return; // its not this players turn.
 
         RaycastHit hit;
@@ -78,7 +78,7 @@ public class MoveAgent : MonoBehaviour
     {
         Protocol.MovePlayerProtocols movePlayer = protocol as Protocol.MovePlayerProtocols;
 
-        if ( !SocketClient.ActiveGameData.PlayerIsActive( movePlayer.player_id ) )
+        if ( movePlayer.player_id != PlayerId )
             return; // its not this players turn.
 
         MoveAgentToPosition( movePlayer.position );

@@ -20,6 +20,7 @@ public class GameData : ScriptableObject
 
     public event System.Action GameInfoUpdated;
     public event System.Action< Dictionary<int, string> > PlayersJoined;
+    public event System.Action<bool> GameActiveStateChanged;
 
     // Player Info
     public string nickname = "player";
@@ -67,6 +68,7 @@ public class GameData : ScriptableObject
         Protocol.HandleProtocol.Inst.Bind( 'b', LaunchGame );                   // TODO: this is not the ideal place for this but hey. i need to make a level manager :|
 
         Protocol.HandleProtocol.Inst.Bind( 'P', PreStartGame );
+        Protocol.HandleProtocol.Inst.Bind( 'S', StartGame );
 
         inited = true;
 
@@ -140,14 +142,48 @@ public class GameData : ScriptableObject
 
     }
 
+    private void StartGame( Protocol.BaseProtocol protocol )
+    {
+        Protocol.StartGameProtocol startgame = protocol as Protocol.StartGameProtocol;
+
+        if ( startgame.ok )
+            gameActive = true;
+        // else
+        // about the game
+        // TODO: above      
+
+        GameInfoUpdated?.Invoke();
+
+    }
+
     /// <summary>
-    /// Can the place make an action in the game?
+    /// are we the current player
     /// </summary>
     /// <param name="pId">id of the player</param>
     /// <returns></returns>
-    public bool PlayerIsActive( int pId )
+    public bool PlayerIsActive(  )
     {
-        return gameActive && pId == currentPlayerID;
+        return gameActive && currentPlayerID == playerID;
+    }
+
+    /// <summary>
+    /// are we pid
+    /// </summary>
+    /// <param name="pid"></param>
+    /// <returns></returns>
+    public bool IsPlayer( int pid )
+    {
+        return playerID == pid;
+    }
+
+    /// <summary>
+    /// are we pid and the current player
+    /// </summary>
+    /// <param name="pid"></param>
+    /// <returns></returns>
+    public bool IsPlayerAndActive( int pid )
+    {
+        return IsPlayer( pid ) && PlayerIsActive();
     }
 
     private void ReceiveServerStatus( Protocol.BaseProtocol protocol )
