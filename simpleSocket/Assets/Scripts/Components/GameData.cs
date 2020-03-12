@@ -19,6 +19,7 @@ public class GameData : ScriptableObject
     public event gameStatusChanged GameStatusChanged;
 
     public event System.Action GameInfoUpdated;
+    public event System.Action< Dictionary<int, string> > PlayersJoined;
 
     // Player Info
     public string nickname = "player";
@@ -63,6 +64,7 @@ public class GameData : ScriptableObject
         Protocol.HandleProtocol.Inst.Bind( 'd', ReceiveGameInfo );
         Protocol.HandleProtocol.Inst.Bind( 's', ReceiveOtherClientStatus );     // this is sent from the server when a client joins the game.
         Protocol.HandleProtocol.Inst.Bind( 'b', LaunchGame );                   // TODO: this is not the ideal place for this but hey. i need to make a level manager :|
+        Protocol.HandleProtocol.Inst.Bind( 'P', PreStartGame );
 
         inited = true;
 
@@ -118,6 +120,24 @@ public class GameData : ScriptableObject
 
     }
 
+    private void PreStartGame( Protocol.BaseProtocol protocol )
+    {
+
+        Protocol.PreStartGameProtocol preStartGame = protocol as Protocol.PreStartGameProtocol;
+        currentGamePlayers.Clear();
+
+        for ( int i = 0; i < preStartGame.player_ids.Length; i++ )
+        {
+            int pid = preStartGame.player_ids[ i ];
+            string pname = preStartGame.player_names[ i ];
+
+            currentGamePlayers.Add( pid, pname );
+        }
+
+        PlayersJoined?.Invoke( currentGamePlayers );
+
+    }
+
     private void ReceiveServerStatus( Protocol.BaseProtocol protocol )
     {
 
@@ -170,6 +190,8 @@ public class GameData : ScriptableObject
         Protocol.HandleProtocol.Inst.Unbind( 's', ReceiveServerStatus );
         Protocol.HandleProtocol.Inst.Unbind( 'd', ReceiveGameInfo );
         Protocol.HandleProtocol.Inst.Unbind( 's', ReceiveOtherClientStatus );
+        Protocol.HandleProtocol.Inst.Unbind( 'P', PreStartGame );
+
 
     }
 

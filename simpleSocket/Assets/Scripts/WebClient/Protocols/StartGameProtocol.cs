@@ -34,7 +34,7 @@ namespace Protocol
         public override string Name => "PreStartGame";
 
         public int[] player_ids;
-        public int[] player_names;
+        public string[] player_names;
 
     }
 

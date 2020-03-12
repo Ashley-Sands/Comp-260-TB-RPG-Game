@@ -15,7 +15,7 @@ public class SocketClient : MonoBehaviour
     private const int   MESSAGE_LEN_PACKAGE_SIZE    = 2;
     private const int   MESSAGE_TYPE_PACKAGE_SIZE   = 1;
     private const int   MESSAGE_MAX_LENGTH          = 1024;
-    private const bool  LITTLE_BYTE_ORDER           = false;
+    private const bool  LITTLE_BYTE_ORDER           = true;
 
     [SerializeField] private GameData gameData;
 
@@ -357,8 +357,9 @@ public class SocketClient : MonoBehaviour
             // We are working with Big endian on the server :)
             if ( System.BitConverter.IsLittleEndian )   
             {   // use first two bytes reversed for little endian
-                dataLenBytes[ 0 ] = dataLenBytes_[ 0 ];
-                dataLenBytes[ 1 ] = dataLenBytes_[ 1 ];
+                byte temp = dataLenBytes_[ 0 ];
+                dataLenBytes[ 0 ] = dataLenBytes_[ 1 ];
+                dataLenBytes[ 1 ] = temp;
                 dataIdenityBytes[ 0 ] = dataIdenityBytes_[ 0 ];
 
             }

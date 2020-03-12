@@ -23,6 +23,21 @@ public class SpwanPlayers : MonoBehaviour
 
 		SocketClient.ActiveSocket.QueueMessage( joinedGame );
 
+		SocketClient.ActiveGameData.PlayersJoined += PlayersJoined;
+
+	}
+
+	private void PlayersJoined( Dictionary<int, string> players )
+	{
+		print(">>>>>>>>>>>>>helloo world####################################");
+		foreach ( KeyValuePair<int, string> kv in players )
+		{
+			if ( kv.Key != SocketClient.ActiveGameData.playerID )	// we have already added self!
+				SpwanPlayer( kv.Key );
+		}
+
+		// tell the server every thing is ok!
+
 	}
 
 	void SpwanPlayer( int playerId )
@@ -33,6 +48,12 @@ public class SpwanPlayers : MonoBehaviour
 
 		MoveAgent player = Instantiate<MoveAgent>( playerPrefab, spwanPoints[ playerId ].position, Quaternion.identity );
 		player.PlayerId = playerId;
+
+	}
+
+	private void OnDestroy ()
+	{
+		SocketClient.ActiveGameData.PlayersJoined -= PlayersJoined;
 
 	}
 
