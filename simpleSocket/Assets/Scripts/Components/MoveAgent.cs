@@ -78,10 +78,11 @@ public class MoveAgent : MonoBehaviour
     {
         Protocol.MovePlayerProtocols movePlayer = protocol as Protocol.MovePlayerProtocols;
 
-        if ( !SocketClient.ActiveGameData.PlayerIsActive( movePlayer.playerId ) )
+        if ( !SocketClient.ActiveGameData.PlayerIsActive( movePlayer.player_id ) )
             return; // its not this players turn.
 
         MoveAgentToPosition( movePlayer.position );
+
     }
 
     private void MoveAgentToPosition( Vector3 position )
