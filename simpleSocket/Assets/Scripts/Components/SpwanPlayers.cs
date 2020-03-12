@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Protocol;
 
 public class SpwanPlayers : MonoBehaviour
 {
@@ -10,11 +11,17 @@ public class SpwanPlayers : MonoBehaviour
 	private void Start ()
 	{
 
+		int playerId = SocketClient.ActiveGameData.playerID;
+
 		// spwan the local player
-		SpwanPlayer( SocketClient.ActiveGameData.playerID );
+		SpwanPlayer( playerId );
 
-		// bind onto player joined game.
+		// tell the sever we have joined
+		// and bind onto player joined game to await the final list of players
+		// so we can begin the game.
+		JoinedGameProtocol joinedGame = new JoinedGameProtocol() { player_id = playerId };
 
+		SocketClient.ActiveSocket.QueueMessage( joinedGame );
 
 	}
 

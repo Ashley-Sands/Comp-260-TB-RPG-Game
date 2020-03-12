@@ -50,6 +50,9 @@ namespace Protocol
                 { 'd', new ProtocolEvent() },   // game data
                 { 'b', new ProtocolEvent() },   // launch game
                 // In Game Commands
+                { 'J', new ProtocolEvent() },   // joined game
+                { 'P', new ProtocolEvent() },   // pre start game
+                { 'S', new ProtocolEvent() },   // start game
                 { 'M', new ProtocolEvent() }    // move player
                 // Dont forget to add it to Convert json as well :)
             };
@@ -136,6 +139,15 @@ namespace Protocol
                     break;
                 case 'M':   // launch game
                     newProto = JsonUtility.FromJson<MovePlayerProtocols>( json );
+                    break;
+                case 'J':   // launch game
+                    newProto = JsonUtility.FromJson<JoinedGameProtocol>( json );
+                    break;
+                case 'P':   // launch game
+                    newProto = JsonUtility.FromJson<PreStartGameProtocol>( json );
+                    break;
+                case 'S':   // launch game
+                    newProto = JsonUtility.FromJson<StartGameProtocol>( json );
                     break;
                 default:    // Not found
                     Debug.LogErrorFormat( "Unable to handle json, Failed to identify protocol {0}", idenity );
