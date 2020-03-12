@@ -9,6 +9,8 @@ namespace Protocol
         public override char Identity => 'M';
         public override string Name => "move player";
 
+        public int playerId;
+
         [SerializeField] private int x;
         [SerializeField] private int y;
         [SerializeField] private int z;

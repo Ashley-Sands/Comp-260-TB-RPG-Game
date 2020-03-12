@@ -48,8 +48,13 @@ public class MoveAgent : MonoBehaviour
 
     void SetDestinationToMousePosition ()
     {
+
+        if ( !SocketClient.ActiveGameData.PlayerIsActive( PlayerId ) ) 
+            return; // its not this players turn.
+
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
+
         if ( Physics.Raycast( ray, out hit, 300, layerMask ) ) 
         {
             Protocol.MovePlayerProtocols movePlayer = new Protocol.MovePlayerProtocols() 
@@ -57,8 +62,10 @@ public class MoveAgent : MonoBehaviour
                 position = hit.point
             };
 
+            // send the move to position to the server and update the local player :)
             SocketClient.ActiveSocket.QueueMessage( movePlayer );
-            MovePlayer( movePlayer );
+            MoveAgentToPosition( hit.point );
+
         }
 
         loc = new Vector3((int)hit.point.x, hit.point.y, (int)hit.point.z );
@@ -71,7 +78,15 @@ public class MoveAgent : MonoBehaviour
     {
         Protocol.MovePlayerProtocols movePlayer = protocol as Protocol.MovePlayerProtocols;
 
-        myNavMeshAgent.SetDestination( movePlayer.position );
+        if ( !SocketClient.ActiveGameData.PlayerIsActive( movePlayer.playerId ) )
+            return; // its not this players turn.
+
+        MoveAgentToPosition( movePlayer.position );
+    }
+
+    private void MoveAgentToPosition( Vector3 position )
+    {
+        myNavMeshAgent.SetDestination( position );
 
     }
 

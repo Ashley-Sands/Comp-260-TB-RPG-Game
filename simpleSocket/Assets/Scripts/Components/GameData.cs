@@ -33,6 +33,7 @@ public class GameData : ScriptableObject
     public float gameStartsAt = 0;
 
     // In Game info
+    public bool gameActive = false;
     public int currentPlayerID = 0;         // it would be better if the currentPlayers what a dict with playerId as the key and name as the value. \n
     public string currentPlayerName = "";   // then we can just use the current player id :)
 
@@ -64,6 +65,7 @@ public class GameData : ScriptableObject
         Protocol.HandleProtocol.Inst.Bind( 'd', ReceiveGameInfo );
         Protocol.HandleProtocol.Inst.Bind( 's', ReceiveOtherClientStatus );     // this is sent from the server when a client joins the game.
         Protocol.HandleProtocol.Inst.Bind( 'b', LaunchGame );                   // TODO: this is not the ideal place for this but hey. i need to make a level manager :|
+
         Protocol.HandleProtocol.Inst.Bind( 'P', PreStartGame );
 
         inited = true;
@@ -136,6 +138,16 @@ public class GameData : ScriptableObject
 
         PlayersJoined?.Invoke( currentGamePlayers );
 
+    }
+
+    /// <summary>
+    /// Can the place make an action in the game?
+    /// </summary>
+    /// <param name="pId">id of the player</param>
+    /// <returns></returns>
+    public bool PlayerIsActive( int pId )
+    {
+        return gameActive && pId == currentPlayerID;
     }
 
     private void ReceiveServerStatus( Protocol.BaseProtocol protocol )
