@@ -21,6 +21,7 @@ public class GameData : ScriptableObject
     public event System.Action GameInfoUpdated;
     public event System.Action< Dictionary<int, string> > PlayersJoined;
     public event System.Action<bool> GameActiveStateChanged;
+    public event System.Action<int> PlayerChanged;
 
     // Player Info
     public string nickname = "player";
@@ -37,8 +38,6 @@ public class GameData : ScriptableObject
     public bool gameActive = false;
     public int currentPlayerID = 0;         // it would be better if the currentPlayers what a dict with playerId as the key and name as the value. \n
     public string currentPlayerName = "";   // then we can just use the current player id :)
-
-
 
     // Connection and game status
     private ConnectionStatus connStatus = ConnectionStatus.None;
@@ -69,6 +68,7 @@ public class GameData : ScriptableObject
 
         Protocol.HandleProtocol.Inst.Bind( 'P', PreStartGame );
         Protocol.HandleProtocol.Inst.Bind( 'S', StartGame );
+        Protocol.HandleProtocol.Inst.Bind( 'C', ChangePlayer );
 
         inited = true;
 
@@ -138,6 +138,7 @@ public class GameData : ScriptableObject
             currentGamePlayers.Add( pid, pname );
         }
 
+        currentPlayerName = currentGamePlayers[ 0 ];
         PlayersJoined?.Invoke( currentGamePlayers );
 
     }
@@ -153,6 +154,17 @@ public class GameData : ScriptableObject
         // TODO: above      
 
         GameInfoUpdated?.Invoke();
+        GameActiveStateChanged?.Invoke( gameActive );
+
+    }
+
+    private void ChangePlayer( Protocol.BaseProtocol protocol )
+    {
+
+        Protocol.ChangePlayerProtocol changePlayer = protocol as Protocol.ChangePlayerProtocol;
+
+        currentPlayerID = changePlayer.player_id;
+        currentPlayerName = currentGamePlayers[ currentPlayerID ];
 
     }
 
@@ -239,6 +251,8 @@ public class GameData : ScriptableObject
         Protocol.HandleProtocol.Inst.Unbind( 'd', ReceiveGameInfo );
         Protocol.HandleProtocol.Inst.Unbind( 's', ReceiveOtherClientStatus );
         Protocol.HandleProtocol.Inst.Unbind( 'P', PreStartGame );
+        Protocol.HandleProtocol.Inst.Unbind( 'S', StartGame );
+        Protocol.HandleProtocol.Inst.Unbind( 'C', ChangePlayer );
 
 
     }

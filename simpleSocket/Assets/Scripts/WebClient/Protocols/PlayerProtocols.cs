@@ -4,7 +4,16 @@ using UnityEngine;
 
 namespace Protocol
 {
-    public class MovePlayerProtocols : BaseProtocol
+
+    public class ChangePlayerProtocol : BaseProtocol
+    {
+        public override char Identity => 'C';
+        public override string Name => "change player";
+
+        public int player_id;
+    }
+
+    public class MovePlayerProtocol : BaseProtocol
     {
         public override char Identity => 'M';
         public override string Name => "move player";

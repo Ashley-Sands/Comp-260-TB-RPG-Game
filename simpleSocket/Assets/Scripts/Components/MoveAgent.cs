@@ -57,7 +57,7 @@ public class MoveAgent : MonoBehaviour
 
         if ( Physics.Raycast( ray, out hit, 300, layerMask ) ) 
         {
-            Protocol.MovePlayerProtocols movePlayer = new Protocol.MovePlayerProtocols() 
+            Protocol.MovePlayerProtocol movePlayer = new Protocol.MovePlayerProtocol() 
             { 
                 position = hit.point
             };
@@ -76,7 +76,7 @@ public class MoveAgent : MonoBehaviour
 
     private void MovePlayer( Protocol.BaseProtocol protocol)
     {
-        Protocol.MovePlayerProtocols movePlayer = protocol as Protocol.MovePlayerProtocols;
+        Protocol.MovePlayerProtocol movePlayer = protocol as Protocol.MovePlayerProtocol;
 
         if ( movePlayer.player_id != PlayerId )
             return; // its not this players turn.
