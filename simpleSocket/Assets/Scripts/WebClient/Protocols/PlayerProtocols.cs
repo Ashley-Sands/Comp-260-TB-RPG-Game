@@ -14,6 +14,7 @@ namespace Protocol
         public override string Name => "change player";
 
         public int player_id;
+        public int turn_len;
     }
 
     public class MovePlayerProtocol : BaseProtocol
