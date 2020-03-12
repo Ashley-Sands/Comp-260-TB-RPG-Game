@@ -21,7 +21,6 @@ public class GameData : ScriptableObject
     public event System.Action GameInfoUpdated;
     public event System.Action< Dictionary<int, string> > PlayersJoined;
     public event System.Action<bool> GameActiveStateChanged;
-    public event System.Action<int> PlayerChanged;
 
     // Player Info
     public string nickname = "player";
@@ -165,6 +164,8 @@ public class GameData : ScriptableObject
 
         currentPlayerID = changePlayer.player_id;
         currentPlayerName = currentGamePlayers[ currentPlayerID ];
+
+        GameInfoUpdated?.Invoke();
 
     }
 
