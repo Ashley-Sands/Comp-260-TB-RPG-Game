@@ -62,7 +62,7 @@ public class DisplayGameInfoUI : MonoBehaviour
     private void OnDestroy ()
     {
         gameData.GameInfoUpdated -= UpdateGameInfo;
-        Protocol.HandleProtocol.Inst.Bind( 'C', ChangePlayer );
+        Protocol.HandleProtocol.Inst.Unbind( 'C', ChangePlayer );
 
     }
 
