@@ -21,6 +21,7 @@ public class GameData : ScriptableObject
     public event System.Action GameInfoUpdated;
     public event System.Action< Dictionary<int, string> > PlayersJoined;
     public event System.Action<bool> GameActiveStateChanged;
+    public event System.Action<int> PlayerDisconnected;
 
     // Player Info
     public string nickname = "player";
@@ -95,8 +96,20 @@ public class GameData : ScriptableObject
     private void ReceiveOtherClientStatus ( Protocol.BaseProtocol protocol )
     {
 
-        currentLobbyClients.Add( protocol.from_client );
+        Protocol.StatusProtocol status = protocol as Protocol.StatusProtocol;
 
+        if ( status.IsType( Protocol.StatusProtocol.Type.Client ) )
+        {
+            if ( status.ok )
+            {
+                currentLobbyClients.Add( status.from_client );
+            }
+            else if ( currentLobbyClients.Contains( status.from_client ) )
+            {
+                currentLobbyClients.Remove( status.from_client );
+                PlayerDisconnected?.Invoke( currentPlayerID );
+            }
+        }
         GameInfoUpdated?.Invoke();
 
     }
