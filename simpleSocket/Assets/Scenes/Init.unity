@@ -1683,7 +1683,7 @@ GameObject:
   - component: {fileID: 1431160232}
   - component: {fileID: 1431160231}
   m_Layer: 0
-  m_Name: LoadScene
+  m_Name: --LoadOnStart--
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1702,7 +1702,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneToLoad: MainMenu
-  loadOnStart: 1
+  loadOn: 0
 --- !u!4 &1431160232
 Transform:
   m_ObjectHideFlags: 0
