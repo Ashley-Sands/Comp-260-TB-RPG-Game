@@ -14,7 +14,7 @@ public class SetActiveOnConnectionStatusChange : MonoBehaviour
 
     }
 
-    private void ConnectionStatusChanged ( ConnectionStatus status )
+    private void ConnectionStatusChanged ( ConnectionStatus status, string message )
     {
 
         if ( status == activeStatus )

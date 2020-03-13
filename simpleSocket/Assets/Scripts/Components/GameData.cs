@@ -12,7 +12,7 @@ public class GameData : ScriptableObject
     public enum GameStatus { None, Joining, Active }
     public const string GAME_CLIENT_NAME = "GAME";  // this is used as the 'from_client' (in BaseProtocol) when the game needs to inject inbound messages to queue.
 
-    public delegate void connectionStatusChanged ( ConnectionStatus status );
+    public delegate void connectionStatusChanged ( ConnectionStatus status, string message );
     public event connectionStatusChanged ConnectionStatusChanged;
 
     public delegate void gameStatusChanged ( GameStatus status );
@@ -205,17 +205,17 @@ public class GameData : ScriptableObject
         Protocol.StatusProtocol serverStatus = protocol as Protocol.StatusProtocol;
 
         if ( serverStatus.IsType( Protocol.StatusProtocol.Type.Server ) && !serverStatus.ok )
-            SetConnectionStatus( ConnectionStatus.Error );
+            SetConnectionStatus( ConnectionStatus.Error, serverStatus.message );
 
     }
 
-    public void SetConnectionStatus( ConnectionStatus status )
+    public void SetConnectionStatus( ConnectionStatus status, string message = "" )
     {
         if (status != connStatus && connStatus != ConnectionStatus.Error)
         {
             Debug.Log( "Set connection status " + status );
 
-            ConnectionStatusChanged?.Invoke( status );
+            ConnectionStatusChanged?.Invoke( status, message );
             connStatus = status;
 
         }
@@ -239,7 +239,7 @@ public class GameData : ScriptableObject
     public void ResetConnectionStatus()
     {
         connStatus = ConnectionStatus.None;
-        ConnectionStatusChanged?.Invoke( connStatus = ConnectionStatus.None );
+        ConnectionStatusChanged?.Invoke( ConnectionStatus.None, "" );
 
         // TODO: reset game status with connection??
 

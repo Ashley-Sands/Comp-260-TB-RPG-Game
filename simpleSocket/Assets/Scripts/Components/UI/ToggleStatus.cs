@@ -20,7 +20,7 @@ public class ToggleStatus : MonoBehaviour
 
     }
 
-    private void ConnectionStatusChanged( ConnectionStatus status )
+    private void ConnectionStatusChanged( ConnectionStatus status, string message )
     {
 
         switch( status )
@@ -29,10 +29,10 @@ public class ToggleStatus : MonoBehaviour
                 AddMessage( "Connecting", "..." );
                 break;
             case ConnectionStatus.Error:
-                AddMessage( "Connection Error", "Please check your connection and try again" );
+                AddMessage( "Error", message );
                 break;
             default:
-                RemoveMessage( "Connecting", "ConnectionError" );
+                RemoveMessage( "Connecting", "Error" );
                 break;
         }
 
