@@ -23,11 +23,17 @@ public class SetLobbyData : MonoBehaviour
 
     private void UpdateGameInfo ( )
     {
+        GameData gameData = SocketClient.ActiveGameData;
+        startsAt = gameData.gameStartsAt;
 
-        startsAt = SocketClient.ActiveGameData.gameStartsAt;
-
-        if ( !countdownIsRunning )
+        if ( gameData.LobbyRequired > 0 )
+        {
+            DetailsMorePlayersUi();
+        }
+        else if ( !countdownIsRunning )
+        {
             StartCoroutine( Countdown() );
+        }
 
         UpdateUI();
 
@@ -38,6 +44,7 @@ public class SetLobbyData : MonoBehaviour
 
         countdownIsRunning = true;
 
+        GameData gameData = SocketClient.ActiveGameData;
         float remainTime = startsAt - Time.time;
 
         while ( remainTime > 0f )
@@ -46,6 +53,13 @@ public class SetLobbyData : MonoBehaviour
             remainTime = Mathf.Max(0, startsAt - Time.time);
 
             details.SetText( string.Format( "Match Starts In {0} secs", Helpers.GetTime( Mathf.FloorToInt(remainTime) ) ) );
+
+            if ( gameData.LobbyRequired > 0 )
+            {
+                DetailsMorePlayersUi(); 
+                break;
+            }
+
 
         }
 
@@ -60,6 +74,13 @@ public class SetLobbyData : MonoBehaviour
         gameName.SetText( gameData.gameName );
         clients.SetText( string.Join( "\n", gameData.currentLobbyClients ) );
 
+    }
+
+    private void DetailsMorePlayersUi( )
+    {
+        GameData gameData = SocketClient.ActiveGameData;
+
+        details.SetText( string.Format( " Require {0} more players", gameData.LobbyRequired ) );
     }
 
     private void OnDestroy ()

@@ -35,7 +35,7 @@ namespace Protocol
     }
 
     /// <summary>
-    /// Basic game info
+    /// Sent from the server to the client with the basic game info
     /// </summary>
     public class GameInfoProtocol : BaseProtocol
     {
@@ -44,6 +44,7 @@ namespace Protocol
 
         public string game_name;
         public string[] players;
+        public int min_players;
         public int max_players;
         public float starts_in;
 

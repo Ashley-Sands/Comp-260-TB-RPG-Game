@@ -30,8 +30,15 @@ public class GameData : ScriptableObject
     public string gameName = "";
     public List<string> currentLobbyClients = new List<string>();   // TODO: move into current players. i would do it now but theres a lot of work to do on both sides to bing it inline. and i just want ot get it all workinbg atm
     public Dictionary<int, string> currentGamePlayers = new Dictionary<int, string>();
+    public int minPlayers = 2;                  // 4 by default can vary 
     public int maxPlayers = 4;                  // 4 by default can vary 
     public float gameStartsAt = 0;
+
+    /// <summary>
+    /// How meny more players do we need?
+    /// </summary>
+    public int LobbyRequired => minPlayers - currentLobbyClients.Count;
+    public int PlayersRequired => minPlayers - ( gameStatus == GameStatus.Active ? currentGamePlayers.Count : currentLobbyClients.Count );
 
     // In Game info
     public bool gameActive = false;
@@ -99,6 +106,7 @@ public class GameData : ScriptableObject
         Protocol.GameInfoProtocol gameInfo = protocol as Protocol.GameInfoProtocol;
 
         gameName = gameInfo.game_name;
+        minPlayers = gameInfo.min_players;
         maxPlayers = gameInfo.max_players;
         gameStartsAt = Time.time + gameInfo.starts_in;
         currentLobbyClients.Clear();
