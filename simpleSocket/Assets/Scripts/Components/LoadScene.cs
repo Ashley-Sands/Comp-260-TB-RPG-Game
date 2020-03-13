@@ -5,14 +5,33 @@ using UnityEngine.SceneManagement;
 
 public class LoadScene : MonoBehaviour
 {
-    public string sceneToLoad;
-    [SerializeField] private bool loadOnStart = false;
+    public enum LoadEvent{ Start, ServerError }
+    [SerializeField] private string sceneToLoad;
+    [SerializeField] private LoadEvent loadOn = LoadEvent.Start;
 
-    void Start()
+    void Start ()
     {
 
-        if ( loadOnStart )
-            SceneManager.LoadScene( sceneToLoad, LoadSceneMode.Single );
+        switch ( loadOn )
+        {
+
+            case LoadEvent.Start:
+                SceneManager.LoadScene( sceneToLoad, LoadSceneMode.Single );
+                break;
+            case LoadEvent.ServerError:
+                Protocol.HandleProtocol.Inst.Bind( 's', ServerError );
+                break;
+
+        }
+    }
+
+    public void ServerError( Protocol.BaseProtocol protocol )
+    {
+
+        Protocol.StatusProtocol status = protocol as Protocol.StatusProtocol;
+
+        if ( status.IsType( Protocol.StatusProtocol.Type.Server ) && !status.ok )
+            LoadLevel();
 
     }
 
@@ -20,4 +39,17 @@ public class LoadScene : MonoBehaviour
     {
         SceneManager.LoadScene( sceneToLoad, LoadSceneMode.Single );
     }
+
+    private void OnDestroy ()
+    {
+        switch ( loadOn )
+        {
+
+            case LoadEvent.ServerError:
+                Protocol.HandleProtocol.Inst.Unbind( 's', ServerError );
+                break;
+
+        }
+    }
+
 }
