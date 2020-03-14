@@ -30,12 +30,28 @@ public class SocketClient : MonoBehaviour
     private readonly string hostIp = "127.0.0.1";
     private readonly int port = 8222;
 
+    private bool _reset = false;
     private bool _running = false;    // need to add this to the threads.
     private bool _connecting = false;
     private bool _connected = false;
 
     public float connectingCooldown;
     private float _reconnectCooldown = 0;
+
+    public bool Reset{
+        get {
+            lock ( this )
+            {
+                return _reset;
+            }
+        }
+        set {
+            lock ( this )
+            {
+                _reset = value;
+            }
+        }
+    }
 
     public bool Running {
         get{
@@ -190,6 +206,11 @@ public class SocketClient : MonoBehaviour
     void Update()
     {
 
+        if ( Reset )
+        {
+            ResetSocket();
+            Reset = false;
+        }
         // always process the inbound queue, as the game can inject protocols,
         // as a means of notifcation, ie when the connection is lost.
         while ( inboundQueue.Count > 0 )
@@ -286,17 +307,16 @@ public class SocketClient : MonoBehaviour
         while ( ReciveThread_isRunning && Connected)
         {
             // recive first bytes to see how long the message is
-            socket.Receive( mesLenBuffer, 0, MESSAGE_LEN_PACKAGE_SIZE, SocketFlags.None );
-
             try
             {
+                socket.Receive( mesLenBuffer, 0, MESSAGE_LEN_PACKAGE_SIZE, SocketFlags.None );
                 // Get the next byte to see what data the message contatines
                 socket.Receive( mesTypeBuffer, 0, MESSAGE_TYPE_PACKAGE_SIZE, SocketFlags.None );
             }
             catch( System.Exception e )
             {
                 Debug.LogError( e );
-                Disconnect();
+                ErrorDisconnect();
                 break;
             }
 
@@ -323,8 +343,20 @@ public class SocketClient : MonoBehaviour
 
             Debug.LogWarningFormat("Recived message Len {0}; Identity {1}; ", messageLen, messageIdenity);
 
+            int result = 0;
+
             // receive the message
-            int result = socket.Receive( mesBuffer, 0, messageLen, SocketFlags.None );
+            try
+            {
+                result = socket.Receive( mesBuffer, 0, messageLen, SocketFlags.None );
+            }
+            catch( System.Exception e )
+            {
+                Debug.LogError( e );
+                ErrorDisconnect();
+                break;
+            }
+
             string message = encoder.GetString( mesBuffer, 0, result );
 
             BaseProtocol protocol = HandleProtocol.ConvertJson( messageIdenity, message );
@@ -383,7 +415,7 @@ public class SocketClient : MonoBehaviour
             catch(System.Exception e)
             {
                 Debug.LogError( e );
-                Disconnect();
+                ErrorDisconnect();
                 break;
             }
 
@@ -420,16 +452,21 @@ public class SocketClient : MonoBehaviour
         }
         catch{}
 
+        Reset = true;
+        
+        print( "Helloo World");
+
         // Add a server error to the inbound cue.
         // to let the game know that an error has occored.
         StatusProtocol serverStatus = new StatusProtocol();
         serverStatus.ok = false;
+        serverStatus.message = "Server disconnected!";
         serverStatus.SetMessageType( StatusProtocol.Type.Server );
         serverStatus.from_client = GameData.GAME_CLIENT_NAME;
 
         inboundQueue.Enqueue( serverStatus );
 
-        ResetSocket();
+
 
     }
 
@@ -442,6 +479,10 @@ public class SocketClient : MonoBehaviour
         {
             socket.Shutdown( SocketShutdown.Both );
         }
+        catch( System.Exception e)
+        {
+            Debug.LogError( e );
+        }
         finally
         {
             socket.Close();
@@ -451,19 +492,19 @@ public class SocketClient : MonoBehaviour
 
     private void ResetSocket()
     {
+
         Running = false;
         Connected = false;
 
-        OnDestroy();    // make sure all the threads have stoped
+        CloseThreads(false);    // make sure all the threads have stoped
 
         socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
+        print("Socketttttttttttttttttttttttttttttttttttttttt"); 
 
     }
 
-    private void OnDestroy ()
+    private void CloseThreads( bool disconnect )
     {
-        Debug.LogFormat( " preDisconnect rt: {0} st: {1} c: {2} con: {3}", receiveThread?.IsAlive, sendThread?.IsAlive, connectThread?.IsAlive, socket?.Connected );
-
         if ( Connecting )
         {
             Connecting = false;
@@ -472,7 +513,8 @@ public class SocketClient : MonoBehaviour
 
         }
 
-        Disconnect();
+        if (disconnect)
+            Disconnect();
 
         if ( ReciveThread_isRunning )
         {
@@ -491,6 +533,16 @@ public class SocketClient : MonoBehaviour
             sendThread.Join();
 
         }
+
+        print( "ALL threads stoped!" );
+        
+    }
+
+    private void OnDestroy ()
+    {
+        Debug.LogFormat( " preDisconnect rt: {0} st: {1} c: {2} con: {3}", receiveThread?.IsAlive, sendThread?.IsAlive, connectThread?.IsAlive, socket?.Connected );
+
+        CloseThreads( true );
 
         Debug.LogFormat( " rt: {0} st: {1} c: {2} con: {3}", receiveThread?.IsAlive, sendThread?.IsAlive, connectThread?.IsAlive, socket?.Connected );
 
