@@ -112,6 +112,8 @@ public class ToggleStatus : MonoBehaviour
     public void ClearMessages()
     {
         messages.Clear();
+        UpdateMessageUI();
+
     }
 
     private void OnDestroy()
