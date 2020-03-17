@@ -89,7 +89,7 @@ public class SocketClient : MonoBehaviour
     /// <summary>
     /// Thread safe method to check if we are connected
     /// </summary>
-    private bool Connected {
+    public bool Connected {
         get {
             lock ( this )
             {

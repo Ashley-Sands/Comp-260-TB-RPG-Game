@@ -14,6 +14,14 @@ public class SetActiveOnConnectionStatusChange : MonoBehaviour
 
     }
 
+    private void Start ()
+    {
+        if ( SocketClient.ActiveGameData.Connected )
+            obj.SetActive( true );
+        else
+            obj.SetActive( false );
+    }
+
     private void ConnectionStatusChanged ( ConnectionStatus status, string message )
     {
 

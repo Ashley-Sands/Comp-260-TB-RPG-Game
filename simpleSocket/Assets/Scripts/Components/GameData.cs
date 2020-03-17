@@ -232,7 +232,7 @@ public class GameData : ScriptableObject
 
     public void SetConnectionStatus( ConnectionStatus status, string message = "" )
     {
-        if (status != connStatus && connStatus != ConnectionStatus.Error)
+        if (status != connStatus)
         {
             Debug.Log( "Set connection status " + status );
 

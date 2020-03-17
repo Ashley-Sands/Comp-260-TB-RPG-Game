@@ -1075,9 +1075,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f103cebb09bb1f41887d6c43762c1c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attamptToClearDocketError: 1
   autoReload: 1
   onStart: 0
-  reloadIntervals: 30
+  reloadIntervals: 2
 --- !u!4 &861668381
 Transform:
   m_ObjectHideFlags: 0
