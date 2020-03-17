@@ -689,6 +689,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 861668380}
+        m_MethodName: StartRequesting
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &333893728
@@ -1040,11 +1051,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 861668381}
-  - component: {fileID: 861668380}
   - component: {fileID: 861668382}
   - component: {fileID: 861668383}
   - component: {fileID: 861668384}
   - component: {fileID: 861668385}
+  - component: {fileID: 861668380}
   m_Layer: 0
   m_Name: Other Functions
   m_TagString: Untagged
@@ -1061,9 +1072,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 861668379}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3fad6c7045c1dd64ba6d4ae777f1291b, type: 3}
+  m_Script: {fileID: 11500000, guid: 6f103cebb09bb1f41887d6c43762c1c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoReload: 1
+  onStart: 0
+  reloadIntervals: 30
 --- !u!4 &861668381
 Transform:
   m_ObjectHideFlags: 0
