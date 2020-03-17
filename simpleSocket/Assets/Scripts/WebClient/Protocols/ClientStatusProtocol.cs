@@ -10,6 +10,7 @@ namespace Protocol
         public override string Name => "Client Identity";
 
         public string nickname = "";
+        public string reg_key = "";
 
     }
 

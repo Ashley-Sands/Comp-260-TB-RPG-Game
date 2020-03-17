@@ -133,7 +133,7 @@ class DisplayAvailableMatches : MonoBehaviour
 		SocketClient.ActiveGameData.SetGameStatus( GameData.GameStatus.Joining );
 		SocketClient.ActiveSocket.QueueMessage( joinGame );
 
-		print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<htygfffdgfhgfhdf")
+		print( "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<htygfffdgfhgfhdf" );
 
 	}
 
