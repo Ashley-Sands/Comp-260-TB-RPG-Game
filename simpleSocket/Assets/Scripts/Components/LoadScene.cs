@@ -61,6 +61,9 @@ public class LoadScene : MonoBehaviour
             case LoadEvent.ServerError:
                 Protocol.HandleProtocol.Inst.Unbind( 's', ServerError );
                 break;
+            case LoadEvent.ClientRegistered:
+                Protocol.HandleProtocol.Inst.Unbind( 'r', clientRegistered );
+                break;
 
         }
     }
