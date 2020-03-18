@@ -11,7 +11,7 @@ public class SpwanPlayers : MonoBehaviour
 	private void Start ()
 	{
 
-		int playerId = SocketClient.ActiveGameData.playerID;
+		int playerId = SocketClient.ActiveGameData.localClient.player_id;
 
 		// spwan the local player
 		SpwanPlayer( playerId );
@@ -27,12 +27,12 @@ public class SpwanPlayers : MonoBehaviour
 
 	}
 
-	private void PlayersJoined ( Dictionary<int, string> players )
+	private void PlayersJoined ( Dictionary<int, GameData.Client> players )
 	{
 
-		foreach ( KeyValuePair<int, string> kv in players )
+		foreach ( KeyValuePair<int, GameData.Client> kv in players )
 		{
-			if ( kv.Key != SocketClient.ActiveGameData.playerID )   // we have already added self!
+			if ( kv.Key != SocketClient.ActiveGameData.localClient.player_id )   // we have already added self!
 				SpwanPlayer( kv.Key );
 		}
 

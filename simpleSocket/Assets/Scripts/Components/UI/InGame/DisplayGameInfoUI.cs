@@ -23,13 +23,13 @@ public class DisplayGameInfoUI : MonoBehaviour
         gameData.GameInfoUpdated += UpdateGameInfo;
         Protocol.HandleProtocol.Inst.Bind( 'C', ChangePlayer );
 
-        nicknameUI.SetText( string.Format( "{0}({1})", gameData.nickname, gameData.playerID ) );
+        nicknameUI.SetText( string.Format( "{0}({1})", gameData.localClient.nickname, gameData.localClient.player_id ) );
 
     }
 
     private void UpdateGameInfo()
     {
-         currentPlayerUI.SetText( string.Format( "{0}({1})", gameData.currentPlayerName, gameData.currentPlayerID ) );
+         currentPlayerUI.SetText( string.Format( "{0}({1})", gameData.CurrentPlayerName, gameData.currentPlayerID ) );
     }
 
     private void ChangePlayer( Protocol.BaseProtocol protocol )

@@ -8,6 +8,6 @@ public class SetNickname : MonoBehaviour
 
     public void SetPlayerNickname ()
     {
-        SocketClient.ActiveGameData.nickname = nicknameInput.text;
+        SocketClient.ActiveGameData.localClient.nickname = nicknameInput.text;
     }
 }
