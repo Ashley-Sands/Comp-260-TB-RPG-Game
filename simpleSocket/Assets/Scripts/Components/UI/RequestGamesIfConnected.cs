@@ -47,7 +47,7 @@ public class RequestGamesIfConnected : MonoBehaviour
 
         if (SocketClient.ActiveGameData.Connected)
         {
-            GameRequestProtocol gameRequest = new GameRequestProtocol();
+            CurrentLobbyProtocol gameRequest = new CurrentLobbyProtocol();
             SocketClient.ActiveSocket.QueueMessage( gameRequest );
         }
 

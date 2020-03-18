@@ -19,7 +19,7 @@ public class RequestAvailableGames : MonoBehaviour
         if ( !serverStatus.IsType( StatusProtocol.Type.Server ) || !serverStatus.ok ) return; // oppsie we've been bad.... :(
 
         print( "Status Ok: " + serverStatus.ok );
-        GameRequestProtocol gameRequest = new GameRequestProtocol();
+        CurrentLobbyProtocol gameRequest = new CurrentLobbyProtocol();
         SocketClient.ActiveSocket.QueueMessage( gameRequest );
 
     }

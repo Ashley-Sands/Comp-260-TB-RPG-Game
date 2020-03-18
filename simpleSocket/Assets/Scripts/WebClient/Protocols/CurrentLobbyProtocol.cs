@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace Protocol
 {
-    public class GameRequestProtocol : BaseProtocol
+    public class CurrentLobbyProtocol : BaseProtocol
     {
         public override char Identity => 'g';
         public override string Name => "Game Request";
 
-        public string[] available_games;
+        public int[] lobby_ids;
         public string[] available_slots;
         
     }

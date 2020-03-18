@@ -58,7 +58,7 @@ class DisplayAvailableMatches : MonoBehaviour
 	private void SetAvailableGames( BaseProtocol protocol )
 	{
 
-		GameRequestProtocol gamesRequest = protocol as GameRequestProtocol;
+		CurrentLobbyProtocol gamesRequest = protocol as CurrentLobbyProtocol;
 
 		print( "Display match..." + gamesRequest.GetJson(out int _) ); ;
 
@@ -66,7 +66,7 @@ class DisplayAvailableMatches : MonoBehaviour
 
 	}
 
-	private void BuildMatchSelect( GameRequestProtocol games )
+	private void BuildMatchSelect( CurrentLobbyProtocol games )
 	{
 
 		matchNames = games.available_games;
