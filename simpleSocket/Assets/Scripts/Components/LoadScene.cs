@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class LoadScene : MonoBehaviour
 {
-    public enum LoadEvent{ Start, ServerError }
+    public enum LoadEvent{ Start, ServerError, ClientRegistered }
     [SerializeField] private string sceneToLoad;
     [SerializeField] private LoadEvent loadOn = LoadEvent.Start;
 
@@ -21,6 +21,9 @@ public class LoadScene : MonoBehaviour
             case LoadEvent.ServerError:
                 Protocol.HandleProtocol.Inst.Bind( 's', ServerError );
                 break;
+            case LoadEvent.ClientRegistered:
+                Protocol.HandleProtocol.Inst.Bind( 'r', clientRegistered );
+                break;
 
         }
     }
@@ -31,6 +34,16 @@ public class LoadScene : MonoBehaviour
         Protocol.StatusProtocol status = protocol as Protocol.StatusProtocol;
 
         if ( status.IsType( Protocol.StatusProtocol.Type.Server ) && !status.ok )
+            LoadLevel();
+
+    }
+
+    public void clientRegistered( Protocol.BaseProtocol protocol )
+    {
+
+        Protocol.ClientRegistered registered = protocol as Protocol.ClientRegistered;
+
+        if ( registered.ok )
             LoadLevel();
 
     }

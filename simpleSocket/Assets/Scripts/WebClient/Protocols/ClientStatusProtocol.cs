@@ -14,4 +14,16 @@ namespace Protocol
 
     }
 
+    public class ClientRegistered : BaseProtocol
+    {
+
+        public override char Identity => 'r';
+        public override string Name => "Client Registered";
+
+        public bool ok;
+        public string client_id = "";
+        public string reg_key = "";
+
+    }
+
 }

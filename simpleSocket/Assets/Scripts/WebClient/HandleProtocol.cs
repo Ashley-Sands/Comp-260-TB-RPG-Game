@@ -43,6 +43,7 @@ namespace Protocol
                 { 'm', new ProtocolEvent() },   // message
                 { 's', new ProtocolEvent() },   // status
                 { 'i', new ProtocolEvent() },   // client identity
+                { 'r', new ProtocolEvent() },   // client registered
                 // Game Commands
                 { 'g', new ProtocolEvent() },   // game request
                 { 'j', new ProtocolEvent() },   // join game request
@@ -122,6 +123,9 @@ namespace Protocol
                     break;
                 case 'i':   // client idenity
                     newProto = JsonUtility.FromJson<ClientIdentity>( json );
+                    break;
+                case 'r':   // client registered
+                    newProto = JsonUtility.FromJson<ClientRegistered>( json );
                     break;
                 case 'g':   // game request
                     newProto = JsonUtility.FromJson<GameRequestProtocol>( json );
