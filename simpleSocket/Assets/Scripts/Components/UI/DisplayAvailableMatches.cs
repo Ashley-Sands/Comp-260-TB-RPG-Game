@@ -69,15 +69,13 @@ class DisplayAvailableMatches : MonoBehaviour
 	private void BuildMatchSelect( CurrentLobbyProtocol games )
 	{
 
-		matchNames = games.available_games;
-
 		for ( int i = 0; i < maxButtons; i++ )
 		{
 			
-			if (i >= matchNames.Length )
+			if (i >= games.level_names.Length )
 				SetButtonText( ( maxButtons - (i+1) ), "-" );
 			else
-				SetButtonText( ( maxButtons - (i+1) ), string.Format( " {0} [{1} slots available] ", matchNames[i], games.available_slots[i]) );
+				SetButtonText( ( maxButtons - (i+1) ), string.Format( "(Lobby-{0}) {1} [{2}/{3} slots available] ", games.lobby_ids[i], games.level_names[i], games.current_players[i], games.max_players[i]) );
 
 		}
 

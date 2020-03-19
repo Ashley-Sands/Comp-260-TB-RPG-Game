@@ -7,11 +7,14 @@ namespace Protocol
     public class CurrentLobbyProtocol : BaseProtocol
     {
         public override char Identity => 'g';
-        public override string Name => "Game Request";
+        public override string Name => "Current";
 
         public int[] lobby_ids;
-        public string[] available_slots;
-        
+        public string[] level_names;
+        public int[] min_players;
+        public int[] max_players;
+        public int[] current_players;
+
     }
 
     public class JoinLobbyProtocol : BaseProtocol   // See start game for joined game
