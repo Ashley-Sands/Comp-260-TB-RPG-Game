@@ -18,7 +18,7 @@ class DisplayAvailableMatches : MonoBehaviour
 	[SerializeField] private Color selectedColour = Color.gray;
 
 	private List<Button> buttons;
-	private string[] matchNames;
+	private CurrentLobbyProtocol currentLobbyData;
 
 	private int selectedMatchId = -1;
 
@@ -58,26 +58,27 @@ class DisplayAvailableMatches : MonoBehaviour
 	private void SetAvailableGames( BaseProtocol protocol )
 	{
 
-		CurrentLobbyProtocol gamesRequest = protocol as CurrentLobbyProtocol;
+		currentLobbyData = protocol as CurrentLobbyProtocol;
 
-		print( "Display match..." + gamesRequest.GetJson(out int _) ); ;
+		print( "Display match..." + currentLobbyData.GetJson(out int _) ); ;
 
-		matchNames = gamesRequest.level_names;
 
-		BuildMatchSelect( gamesRequest );
+		BuildMatchSelect( );
 
 	}
 
-	private void BuildMatchSelect( CurrentLobbyProtocol games )
+	private void BuildMatchSelect( )
 	{
 
 		for ( int i = 0; i < maxButtons; i++ )
 		{
 			
-			if (i >= games.level_names.Length )
+			if (i >= currentLobbyData.LobbyCount )
 				SetButtonText( ( maxButtons - (i+1) ), "-" );
 			else
-				SetButtonText( ( maxButtons - (i+1) ), string.Format( "(Lobby-{0}) {1} [{2}/{3} slots available] ", games.lobby_ids[i], games.level_names[i], games.current_players[i], games.max_players[i]) );
+				SetButtonText( ( maxButtons - (i+1) ), string.Format( "(Lobby-{0}) {1} [{2}/{3} slots available] ", currentLobbyData.lobby_ids[i],		 currentLobbyData.level_names[i],
+																													currentLobbyData.current_players[i], currentLobbyData.max_players[i] )
+																													);
 
 		}
 
@@ -90,7 +91,7 @@ class DisplayAvailableMatches : MonoBehaviour
 
 		int matchId = ( maxButtons - 1 ) - buttonId;
 
-		if ( matchId < matchNames.Length )
+		if ( matchId < currentLobbyData.LobbyCount )
 		{
 			if ( selectedMatchId > -1 )
 				SetButtonColour( (maxButtons - 1) - selectedMatchId, Color.white );
@@ -121,14 +122,14 @@ class DisplayAvailableMatches : MonoBehaviour
 
 	public void JoinSelectedGame()
 	{
-		if ( selectedMatchId < 0 || selectedMatchId > matchNames.Length )
+		if ( selectedMatchId < 0 || selectedMatchId > currentLobbyData.LobbyCount )
 		{
 			Debug.LogError( "Nothing is selected" );
 			return;
 		}
 
 		JoinLobbyProtocol joinGame = new JoinLobbyProtocol();
-		joinGame.match_name = matchNames[ selectedMatchId ];
+		joinGame.lobby_id = currentLobbyData.lobby_ids[ selectedMatchId ];
 
 		SocketClient.ActiveGameData.SetGameStatus( GameData.GameStatus.Joining );
 		SocketClient.ActiveSocket.QueueMessage( joinGame );

@@ -9,6 +9,8 @@ namespace Protocol
         public override char Identity => 'g';
         public override string Name => "Current";
 
+        public int LobbyCount => lobby_ids != null ? lobby_ids.Length : 0;
+
         public int[] lobby_ids;
         public string[] level_names;
         public int[] min_players;
@@ -17,13 +19,20 @@ namespace Protocol
 
     }
 
+    /// <summary>
+    /// Sent from the client to the server requesting to join lobby_id
+    /// Then returned by the server containing the host and port to connect to
+    /// </summary>
     public class JoinLobbyProtocol : BaseProtocol   // See start game for joined game
     {
-
+        
         public override char Identity => 'j';
         public override string Name => "Join Match";
 
-        public string match_name = "";
+        public int lobby_id = -1;
+
+        public string host;
+        public int port;
 
     }
 
