@@ -15,6 +15,6 @@ public class SetNickname_fromGameData : MonoBehaviour
             return;
         }
 
-        text.SetText( SocketClient.ActiveGameData.CurrentPlayerName );
+        text.SetText( SocketClient.ActiveGameData.localClient.nickname );
     }
 }
