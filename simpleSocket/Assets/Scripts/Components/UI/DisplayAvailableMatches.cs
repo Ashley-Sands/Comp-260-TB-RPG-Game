@@ -62,6 +62,8 @@ class DisplayAvailableMatches : MonoBehaviour
 
 		print( "Display match..." + gamesRequest.GetJson(out int _) ); ;
 
+		matchNames = gamesRequest.level_names;
+
 		BuildMatchSelect( gamesRequest );
 
 	}
@@ -131,7 +133,6 @@ class DisplayAvailableMatches : MonoBehaviour
 		SocketClient.ActiveGameData.SetGameStatus( GameData.GameStatus.Joining );
 		SocketClient.ActiveSocket.QueueMessage( joinGame );
 
-		print( "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<htygfffdgfhgfhdf" );
 
 	}
 
