@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -76,6 +77,8 @@ public class GameData : ScriptableObject
         Protocol.HandleProtocol.Inst.Bind( 'P', PreStartGame );
         Protocol.HandleProtocol.Inst.Bind( 'S', StartGame );
         Protocol.HandleProtocol.Inst.Bind( 'C', ChangePlayer );
+
+        Protocol.HandleProtocol.Inst.Bind( '&', ReceivePing );
 
         inited = true;
 
@@ -266,6 +269,23 @@ public class GameData : ScriptableObject
 
     }
 
+    private void ReceivePing( Protocol.BaseProtocol proto )
+    {
+
+        Protocol.PingProtocol ping = proto as Protocol.PingProtocol;
+
+        TimeSpan t = DateTime.UtcNow - new DateTime( 1970, 1, 1 );
+        int millisSinceEpoch = (int)t.TotalMilliseconds;
+
+        int total_time = millisSinceEpoch - ping.client_send_time;
+        int time_to_server = ping.server_receive_time - ping.client_send_time;
+        int return_time = millisSinceEpoch - ping.server_receive_time;
+
+        Debug.LogFormat( ">>>>>>>>>>>>>PING (0)<<<<<<<<<<<<<<<<<< Client send time: {0}; Server recieve time: {1}; Client receive time: {2}", ping.client_send_time, ping.server_receive_time, millisSinceEpoch );
+        Debug.LogFormat( ">>>>>>>>>>>>>PING (1)<<<<<<<<<<<<<<<<<< total time: {0}; Time to server: {1}; return time: {2}", total_time, time_to_server, return_time );
+    
+    }
+
     private void OnDestroy ()
     {
         Protocol.HandleProtocol.Inst.Unbind( 'i', ReciveClientIdentityRequest );
@@ -275,6 +295,7 @@ public class GameData : ScriptableObject
         Protocol.HandleProtocol.Inst.Unbind( 'P', PreStartGame );
         Protocol.HandleProtocol.Inst.Unbind( 'S', StartGame );
         Protocol.HandleProtocol.Inst.Unbind( 'C', ChangePlayer );
+        Protocol.HandleProtocol.Inst.Unbind( '&', ReceivePing );
 
 
     }

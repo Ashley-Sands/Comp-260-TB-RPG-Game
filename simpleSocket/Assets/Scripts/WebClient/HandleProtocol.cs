@@ -54,7 +54,9 @@ namespace Protocol
                 { 'P', new ProtocolEvent() },   // pre start game
                 { 'S', new ProtocolEvent() },   // start game
                 { 'M', new ProtocolEvent() },   // move player
-                { 'C', new ProtocolEvent() }    // change player
+                { 'C', new ProtocolEvent() },    // change player
+                // testing
+                { '&', new ProtocolEvent() }    // ping
                 // Dont forget to add it to Convert json as well :)
             };
 
@@ -152,6 +154,9 @@ namespace Protocol
                     break;
                 case 'C':   // change player
                     newProto = JsonUtility.FromJson<ChangePlayerProtocol>( json );
+                    break;
+                case '&':   // change player
+                    newProto = JsonUtility.FromJson<PingProtocol>( json );
                     break;
                 default:    // Not found
                     Debug.LogErrorFormat( "Unable to handle json, Failed to identify protocol {0}", idenity );

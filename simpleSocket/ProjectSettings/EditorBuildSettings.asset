@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameLobby.unity
     guid: 3c63f4eecd5d92043a01a04ed03b59b9
+  - enabled: 1
+    path: Assets/Scenes/Welcom.unity
+    guid: f1d3a1d70db37d0449812629a50001b6
   m_configObjects: {}
