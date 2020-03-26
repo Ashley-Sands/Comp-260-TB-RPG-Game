@@ -1078,7 +1078,7 @@ MonoBehaviour:
   attamptToClearDocketError: 1
   autoReload: 1
   onStart: 0
-  reloadIntervals: 2
+  reloadIntervals: 60
 --- !u!4 &861668381
 Transform:
   m_ObjectHideFlags: 0

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using AMSHelpers;
 
 [CreateAssetMenu( fileName = "GameData", menuName = "GameData" )]
 public class GameData : ScriptableObject
@@ -59,11 +60,25 @@ public class GameData : ScriptableObject
     public bool JoingGame => gameStatus == GameStatus.Joining;
     public bool GameActive => gameStatus == GameStatus.Active;
 
+    public CSV saveLoadFile;
+
     //private void OnEnable ()
     public void Init()
     {
 
         if ( inited ) return;   // make sure that this doent happen twice
+
+        int fc = SaveLoadFile.GetFileCount( Application.dataPath + "/testData/" );
+        saveLoadFile = new CSV( Application.dataPath + "/testData/", "pingData."+fc );
+
+        saveLoadFile.AddRow( new string[] {
+                "Client send time",
+                "ServerRecevie time",
+                "client receive time",
+                "total time",
+                "time to server",
+                "return time"
+                } );
 
         connStatus = ConnectionStatus.None; // this is what i hate about scriptables ffs!
         gameStatus = GameStatus.None;
@@ -274,16 +289,39 @@ public class GameData : ScriptableObject
 
         Protocol.PingProtocol ping = proto as Protocol.PingProtocol;
 
-        TimeSpan t = DateTime.UtcNow - new DateTime( 1970, 1, 1 );
-        int millisSinceEpoch = (int)t.TotalMilliseconds;
+        // the server time is in nano seconds and we need it in millis
+        ping.server_receive_time /= 1000000;
 
-        int total_time = millisSinceEpoch - ping.client_send_time;
-        int time_to_server = ping.server_receive_time - ping.client_send_time;
-        int return_time = millisSinceEpoch - ping.server_receive_time;
+        TimeSpan t = DateTime.UtcNow - new DateTime( 1970, 1, 1 );
+        double millisSinceEpoch = t.TotalMilliseconds;
+
+        double total_time = millisSinceEpoch - ping.client_send_time;
+        double time_to_server = ping.server_receive_time - ping.client_send_time;
+        double return_time = millisSinceEpoch - ping.server_receive_time;
 
         Debug.LogFormat( ">>>>>>>>>>>>>PING (0)<<<<<<<<<<<<<<<<<< Client send time: {0}; Server recieve time: {1}; Client receive time: {2}", ping.client_send_time, ping.server_receive_time, millisSinceEpoch );
         Debug.LogFormat( ">>>>>>>>>>>>>PING (1)<<<<<<<<<<<<<<<<<< total time: {0}; Time to server: {1}; return time: {2}", total_time, time_to_server, return_time );
-    
+
+        /* CSV HEADERS
+        saveLoadFile.AddRow( new string[] {
+                "Client send time",
+                "ServerRecevie time",
+                "client receive time",
+                "total time",
+                "time to server",
+                "return time"
+                } );
+        */
+        saveLoadFile.AddRow( new string[] { 
+                ping.client_send_time.ToString(), 
+                ping.server_receive_time.ToString(),
+                millisSinceEpoch.ToString(),
+                total_time.ToString(),
+                time_to_server.ToString(),
+                return_time.ToString()
+                } );
+
+        saveLoadFile.SaveCSV();
     }
 
     private void OnDestroy ()
