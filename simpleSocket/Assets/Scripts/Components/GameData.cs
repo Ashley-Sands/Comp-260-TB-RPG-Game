@@ -80,6 +80,8 @@ public class GameData : ScriptableObject
                 "return time"
                 } );
 
+        saveLoadFile.SaveCSV();
+
         connStatus = ConnectionStatus.None; // this is what i hate about scriptables ffs!
         gameStatus = GameStatus.None;
 

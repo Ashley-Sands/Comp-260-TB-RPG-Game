@@ -6,7 +6,7 @@ using UnityEngine;
 public class SendPingInput : MonoBehaviour
 {
 
-    public double ddd;
+    public GameObject pinging_HUD;
 
     void Update()
     {
@@ -14,12 +14,24 @@ public class SendPingInput : MonoBehaviour
         if ( Input.GetKeyDown( KeyCode.P ) )
         {
 
-            TimeSpan t = DateTime.UtcNow - new DateTime( 1970, 1, 1 );
-            double millisSinceEpoch = t.TotalMilliseconds;
+            InvokeRepeating( "PingGame", 0, 0.5f );
+            pinging_HUD.SetActive( true );
+        }
 
-            SocketClient.ActiveSocket.QueueMessage( new Protocol.PingProtocol( millisSinceEpoch ) );
-            print( "Send" + DateTime.UtcNow.ToShortDateString() + " :: "+ millisSinceEpoch + " :: "+ (uint)millisSinceEpoch + " :: " + new DateTime( 1970, 1, 1 ).ToShortDateString() );
+        if ( Input.GetKeyDown( KeyCode.O ) )
+        { 
+            CancelInvoke( "PingGame" );
+            pinging_HUD.SetActive( false );
         }
 
     }
+
+    void PingGame()
+    {
+        TimeSpan t = DateTime.UtcNow - new DateTime( 1970, 1, 1 );
+        double millisSinceEpoch = t.TotalMilliseconds;
+
+        SocketClient.ActiveSocket.QueueMessage( new Protocol.PingProtocol( millisSinceEpoch ) );
+    }
+
 }
