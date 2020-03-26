@@ -135,6 +135,7 @@ class DisplayAvailableMatches : MonoBehaviour
 		SocketClient.ActiveSocket.QueueMessage( joinGame );
 
 
+
 	}
 
 	private void OnDestroy ()
